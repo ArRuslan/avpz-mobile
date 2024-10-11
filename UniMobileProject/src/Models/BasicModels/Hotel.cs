@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UniMobileProject.Models
+namespace UniMobileProject.src.Models.BasicModels
 {
     public class Hotel
     {
