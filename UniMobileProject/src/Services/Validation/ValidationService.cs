@@ -45,7 +45,7 @@ namespace UniMobileProject.src.Services.Validation
         }
         public (bool, string?) EmailValidation(string email)
         {
-            if (string.IsNullOrEmpty(email)) return (false, "Email was null");
+            if (string.IsNullOrEmpty(email)) return (false, "Email was null or empty");
             MailAddress? address;
             bool isSuccessful = MailAddress.TryCreate(email, out address);
             return isSuccessful == true ? (isSuccessful, null) :
