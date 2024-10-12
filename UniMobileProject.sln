@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniMobileProject", "UniMobileProject\UniMobileProject.csproj", "{31CF5FBA-8C0B-4A57-871A-2311B9D4DBFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniMobileProject.Tests", "UniMobileProject.Tests\UniMobileProject.Tests.csproj", "{178C95C3-6853-48F5-9A45-DDEF37A9E3DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{31CF5FBA-8C0B-4A57-871A-2311B9D4DBFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31CF5FBA-8C0B-4A57-871A-2311B9D4DBFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31CF5FBA-8C0B-4A57-871A-2311B9D4DBFE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{178C95C3-6853-48F5-9A45-DDEF37A9E3DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178C95C3-6853-48F5-9A45-DDEF37A9E3DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178C95C3-6853-48F5-9A45-DDEF37A9E3DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178C95C3-6853-48F5-9A45-DDEF37A9E3DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
