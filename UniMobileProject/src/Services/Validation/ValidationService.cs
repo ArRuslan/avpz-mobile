@@ -10,13 +10,15 @@ namespace UniMobileProject.src.Services.Validation
 {
     public class ValidationService
     {
-        private const short MIN_PASSWORD_LENGTH = 8;
+        public const short MIN_PASSWORD_LENGTH = 8;
         private readonly char[] specialCharaters = new char[] {'!', '@', '#', '$', '%', '^',
         '&', '*', '_', '-', '+', '=', ':', ';', '\'', '\"', '?', '<', '>', ',', '.'};
         private List<(Func<string, bool> condition, string errorMessage)> passwordRules;
         private List<(Func<string, bool> condition, string errorMesssage)> phoneNumberRules;
         public ValidationService()
         {
+            //TODO - add more rules, cause using cyryllic or special characters that are not specified
+            //is not being checked
             passwordRules = new List<(Func<string, bool>, string)>()
             {
                 (password => !string.IsNullOrEmpty(password), "Password was null"),
@@ -66,7 +68,7 @@ namespace UniMobileProject.src.Services.Validation
         {
             if (string.IsNullOrEmpty(number)) return (false, "Number is null or empty");
             var phoneNumberUtil = PhoneNumberUtil.GetInstance();
-            var phoneNumber = phoneNumberUtil.Parse(number, null);
+            var phoneNumber = phoneNumberUtil.Parse(number, "UA"); // UA is a default region for number check
             var isValid = phoneNumberUtil.IsValidNumber(phoneNumber);
             if (!isValid) return (false, "Phone number is not valid");
             return (true, null);
