@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Mail;
 using PhoneNumbers;
+using System.Globalization;
 
 namespace UniMobileProject.src.Services.Validation
 {
@@ -32,7 +33,10 @@ namespace UniMobileProject.src.Services.Validation
                 (password => password.Any(ch => char.IsAsciiLetterLower(ch)),
                 "Password should contain at least one lower case character"),
                 (password => password.Any(ch => char.IsNumber(ch)),
-                "Password should contain at least one numeric character")
+                "Password should contain at least one numeric character"),
+                (password => !ContainsNonEnglishCharacters(password),
+                    "Password should not contain non-English or unsupported characters"),
+                    (password => !password.Contains(" "), "Password is not valid")
             };
             //phoneNumberRules = new List<(Func<string, bool>, string)>()
             //{
@@ -47,13 +51,20 @@ namespace UniMobileProject.src.Services.Validation
         }
         public (bool, string?) EmailValidation(string email)
         {
-            if (string.IsNullOrEmpty(email)) return (false, "Email was null or empty");
+            if (string.IsNullOrEmpty(email))
+                return (false, "Email was null or empty");
+
+            if (ContainsNonEnglishCharacters(email))
+                return (false, "Email should not contain non-English characters");
+            if (email.Contains(" "))
+                return (false, "Email was not in the right form");
+
             MailAddress? address;
             bool isSuccessful = MailAddress.TryCreate(email, out address);
             return isSuccessful == true ? (isSuccessful, null) :
                 (isSuccessful, "Email was not in the right form");
-
         }
+
 
         public (bool, string?) PasswordValidation(string password)
         {
@@ -66,12 +77,30 @@ namespace UniMobileProject.src.Services.Validation
 
         public (bool, string?) PhoneNumberValidation(string number)
         {
-            if (string.IsNullOrEmpty(number)) return (false, "Number is null or empty");
-            var phoneNumberUtil = PhoneNumberUtil.GetInstance();
-            var phoneNumber = phoneNumberUtil.Parse(number, "UA"); // UA is a default region for number check
-            var isValid = phoneNumberUtil.IsValidNumber(phoneNumber);
-            if (!isValid) return (false, "Phone number is not valid");
-            return (true, null);
+            if (string.IsNullOrEmpty(number))
+                return (false, "Number is null or empty");
+
+            if (number.Any(c => char.IsWhiteSpace(c)))
+                return (false, "Phone number is not valid");
+
+            try
+            {
+                var phoneNumberUtil = PhoneNumberUtil.GetInstance();
+                var phoneNumber = phoneNumberUtil.Parse(number, null);
+
+                if (!phoneNumberUtil.IsValidNumber(phoneNumber))
+                    return (false, "Phone number is not valid");
+
+                return (true, null);
+            }
+            catch (NumberParseException)
+            {
+                return (false, "Phone number is not valid");
+            }
+        }
+        private static bool ContainsNonEnglishCharacters(string input)
+        {
+            return input.Any(ch => ch > 127);
         }
     }
 }
