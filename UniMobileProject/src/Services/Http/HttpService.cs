@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniMobileProject.src.Models.ServiceModels.AuthModels;
 
 namespace UniMobileProject.src.Services.Http
 {

@@ -20,7 +20,10 @@ namespace UniMobileProject.src.Services.Serialization
             }
             else if (typeof(T).Equals(typeof(FailedAuth)))
             {
-                response = await JsonSerializer.DeserializeAsync<FailedAuth>(stream);
+                string errorMessage = ExtractErrorMessage(content);
+                if (errorMessage == string.Empty) throw new ArgumentException("Program wasn't able" +
+                    "to get error message from json");
+                response = new FailedAuth() { ResponseContent = errorMessage };
             }
             else
             {
@@ -35,6 +38,26 @@ namespace UniMobileProject.src.Services.Serialization
         {
             var json = JsonSerializer.Serialize<T>(model);
             return new StringContent(json);
+        }
+
+        private string ExtractErrorMessage(string jsonContent)
+        {
+            using (JsonDocument document = JsonDocument.Parse(jsonContent))
+            {
+                JsonElement root = document.RootElement;
+                if(root.TryGetProperty("detail", out JsonElement detailEleement) &&
+                    detailEleement.ValueKind == JsonValueKind.Array &&
+                    detailEleement.GetArrayLength() > 0)
+                {
+                    JsonElement first = detailEleement[0];
+
+                    if(first.TryGetProperty("msg", out JsonElement msgElement))
+                    {
+                        return msgElement.ToString() ?? string.Empty;
+                    }
+                }
+            }
+            return string.Empty;
         }
     }
 }
