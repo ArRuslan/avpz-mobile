@@ -5,6 +5,8 @@ namespace UniMobileProject.src.Models.ServiceModels.AuthModels
 {
     public class RegisterModel
     {
+        [JsonPropertyName("captcha_key")]
+        public string CaptchaKey { get; set; }
         [JsonPropertyName("email")]
         public string Email { get; }
         [JsonPropertyName("password")]
@@ -19,8 +21,9 @@ namespace UniMobileProject.src.Models.ServiceModels.AuthModels
         public Role Role { get; }
 
         public RegisterModel(string email, string password, string firstName,
-            string lastName, string phoneNumber)
+            string lastName, string phoneNumber, string captchaKey = "somekey")
         {
+            CaptchaKey = captchaKey;
             Email = email;
             Password = password;
             FirstName = firstName;

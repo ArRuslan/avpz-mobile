@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniMobileProject.src.Models.ServiceModels.AuthModels;
+﻿using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject.Tests.ServiceTests.SerializerTests
@@ -68,7 +63,7 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
         {
             foreach(var (input, expected) in loginModelSerializationData)
             {
-                var actual = await serializer.Serialize<LoginModel>(input).ReadAsStringAsync();
+                var actual = serializer.Serialize<LoginModel>(input);
                 Assert.Equal(expected, actual);
             }
         }
