@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniMobileProject.src.Services.Validation;
+﻿using UniMobileProject.src.Services.Validation;
 
 namespace UniMobileProject.Tests.ServiceTests
 {

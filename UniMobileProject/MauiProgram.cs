@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using UniMobileProject.src.Services.Http;
+using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject
 {
@@ -15,6 +17,8 @@ namespace UniMobileProject
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddScoped<IHttpServiceFactory, HttpServiceFactory>();
+            builder.Services.AddScoped<ISerializationFactory, SerializationFactory>();
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif

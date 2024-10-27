@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace UniMobileProject.src.Models.ServiceModels.AuthModels
 {
     public class LoginModel
     {
-        public required string EmailOrName { get; set; }
-        public required string Password { get; set; }
-        public bool isEmail { get; set; }
+        [JsonPropertyName("email")]
+        public string Email { get; }
+        [JsonPropertyName("password")]
+        public string Password { get; }
+
+        public LoginModel(string email, string password)
+        {
+            Email = email;
+            Password = password;
+        }
     }
 }
