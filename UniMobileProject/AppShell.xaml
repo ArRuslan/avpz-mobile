@@ -3,13 +3,18 @@
     x:Class="UniMobileProject.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:UniMobileProject"
+    xmlns:local="clr-namespace:UniMobileProject.src.Views"
     Shell.FlyoutBehavior="Disabled"
     Title="UniMobileProject">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellContent 
+        Title="Login" 
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="login" />
+    <ShellContent 
+        Title="Register" 
+        ContentTemplate="{DataTemplate local:RegisterPage}"
+        Route="register" />
+
 
 </Shell>
