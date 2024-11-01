@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniMobileProject.src.Views.LoginPage"
+             Title="Login"
+             BackgroundColor="White">
+    
+    <Frame Margin="30" Padding="20" CornerRadius="15" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
+        <StackLayout Spacing="20">
+            <Label Text="Login" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
+            
+            <Entry x:Name="UsernameEntry" Placeholder="Username" Keyboard="Email" />
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+
+            <Button Text="Login"
+                    Clicked="OnLoginButtonClicked"
+                    BackgroundColor="#0e3f88"
+                    TextColor="White"
+                    CornerRadius="20"
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand" />
+
+            <Button Text="Register"
+                    Clicked="OnNavigateToRegister"
+                    BackgroundColor="#ffffff"
+                    TextColor="#0e3f88"
+                    BorderColor="#0e3f88"
+                    BorderWidth="1"
+                    CornerRadius="20"
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </Frame>
+</ContentPage>

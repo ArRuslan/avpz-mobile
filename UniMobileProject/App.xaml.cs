@@ -1,12 +1,23 @@
-﻿namespace UniMobileProject
+﻿using UniMobileProject.src.Services.Auth;
+using UniMobileProject.src.Services.Http;
+using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Validation;
+using UniMobileProject.src.Views;
+
+namespace UniMobileProject
 {
     public partial class App : Application
     {
         public App()
         {
-            InitializeComponent();
+            var httpServiceFactory = new HttpServiceFactory();
+            var serializationFactory = new SerializationFactory();
 
-            MainPage = new AppShell();
+            BasicAuthService authService = new BasicAuthService(httpServiceFactory, serializationFactory);
+
+            var validationService = new ValidationService();
+
+            MainPage = new NavigationPage(new LoginPage(authService, validationService));
         }
     }
 }
