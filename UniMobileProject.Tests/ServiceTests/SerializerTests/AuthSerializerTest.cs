@@ -14,7 +14,7 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
 
         private List<(string, FailedAuth)> failedJsonRequestDeserialize = new List<(string, FailedAuth)>()
         {
-            new ("{\"detail\": [" +
+            new (/*"{\"detail\": [" +
                 "{" +
                 "\"loc\": [" +
                 "\"string\"," +
@@ -23,7 +23,10 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
                 "\"msg\": \"error\"," +
                 "\"type\": \"string\"" +
                 "}" +
-                "]}", new FailedAuth() {ResponseContent = "error"})
+                "]}"*/
+                "{" +
+                "\"errors\": [" +
+                "\"error1\", \"error2\"]}", new FailedAuth() {Errors = new List<string>{"error1", "error2"}})
         };
 
         private List<(LoginModel, string)> loginModelSerializationData = new List<(LoginModel, string)>()
@@ -54,7 +57,7 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
             foreach(var (input, expected) in failedJsonRequestDeserialize)
             {
                 var actual = await serializer.Deserialize<FailedAuth>(input);
-                Assert.Equal(expected.ResponseContent, actual.ResponseContent);
+                Assert.Equal(expected.Errors, actual.Errors);
             }
         }
 

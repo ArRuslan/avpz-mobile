@@ -53,8 +53,8 @@ namespace UniMobileProject.src.Services.Auth
             }
             else
             {
-                string? errorMessage = await response.Content.ReadAsStringAsync();
-                AuthResponse unsuccessfulResponse = await _serializer.Deserialize<FailedAuth>(errorMessage);
+                string? errors = await response.Content.ReadAsStringAsync();
+                AuthResponse unsuccessfulResponse = await _serializer.Deserialize<FailedAuth>(errors);
                 return unsuccessfulResponse;
             }
         }

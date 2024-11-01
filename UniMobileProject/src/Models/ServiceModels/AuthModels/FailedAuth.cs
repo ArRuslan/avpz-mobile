@@ -4,8 +4,8 @@ namespace UniMobileProject.src.Models.ServiceModels.AuthModels
 {
     public class FailedAuth : AuthResponse
     {
-        [JsonPropertyName("msg")]
-        public string ResponseContent { get; set; } = string.Empty;
+        [JsonPropertyName("errors")]
+        public List<string> Errors { get; set; } = new List<string>();
         public FailedAuth()
         {
             this.IsSuccess = false;

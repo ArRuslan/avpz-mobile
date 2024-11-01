@@ -10,7 +10,7 @@ namespace UniMobileProject.Tests.ServiceTests.AuthTests
         private IHttpServiceFactory _httpFactory;
         private ISerializationFactory _serializationFactory;
         private BasicAuthService service;
-        private LoginModel correctLoginData = new LoginModel("user@example.com", "123456789Qwe");
+        private LoginModel correctLoginData = new LoginModel("newemail@gmail.com", "somePassword123");
         private RegisterModel correctRegisterData = new RegisterModel(
             "newemail@gmail.com", "somePassword123", "John", "Doe", "+4916092545328");
 

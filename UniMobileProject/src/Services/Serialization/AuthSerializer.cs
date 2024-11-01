@@ -16,10 +16,7 @@ namespace UniMobileProject.src.Services.Serialization
             }
             else if (typeof(T).Equals(typeof(FailedAuth)))
             {
-                string errorMessage = ExtractErrorMessage(content);
-                if (errorMessage == string.Empty) throw new ArgumentException("Program wasn't able" +
-                    "to get error message from json");
-                response = new FailedAuth() { ResponseContent = errorMessage };
+                response = await JsonSerializer.DeserializeAsync<FailedAuth>(stream);
             }
             else
             {
