@@ -2,9 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.RegisterPage"
-             Title="Register">
-    <StackLayout Padding="30" Spacing="20">
-        <Label Text="Register" FontSize="32" HorizontalOptions="Center" />
+             Title="Register"
+             BackgroundColor="White">
+    
+    <Frame Margin="30" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
+        <StackLayout Spacing="20">
+        <Label Text="Register" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
 
         <Entry x:Name="FirstNameEntry" Placeholder="First Name" />
         <Entry x:Name="LastNameEntry" Placeholder="Last Name" />
@@ -14,6 +17,13 @@
         <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
         <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" />
 
-        <Button Text="Register" Clicked="OnRegisterButtonClicked" />
-    </StackLayout>
+            <Button Text="Register" 
+                    Clicked="OnRegisterButtonClicked" 
+                    BackgroundColor="#0e3f88" 
+                    TextColor="White"
+                    CornerRadius="20" 
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </Frame>
 </ContentPage>
