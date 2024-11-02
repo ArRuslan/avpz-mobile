@@ -50,7 +50,8 @@ namespace UniMobileProject.src.Views
             }
             else if (response is FailedAuth failedResponse)
             {
-                await DisplayAlert("Error", failedResponse.ResponseContent, "OK");
+                string errors = string.Join('\n', failedResponse.Errors);
+                await DisplayAlert("Error", errors, "OK");
             }
         }
 
