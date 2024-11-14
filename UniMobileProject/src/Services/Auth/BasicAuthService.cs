@@ -58,6 +58,17 @@ namespace UniMobileProject.src.Services.Auth
                 return unsuccessfulResponse;
             }
         }
+        public async Task<bool> RequestPasswordReset(string email)
+        {
+            var payload = new { email = email };
+            string json = _serializer.Serialize(payload);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpService.GetClient().PostAsync("reset-password/request", httpContent) ??
+                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
+
+            return response.IsSuccessStatusCode;
+        }
 
     }
 }

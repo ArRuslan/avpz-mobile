@@ -31,6 +31,24 @@
                     CornerRadius="20"
                     HeightRequest="50"
                     HorizontalOptions="FillAndExpand" />
+            <Button Text="Forgot Password?"
+                    Clicked="OnForgotPasswordClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="#0e3f88"
+                    FontAttributes="Italic"
+                    HorizontalOptions="Center" />
+
+
+            <Entry x:Name="ForgotPasswordEmailEntry" Placeholder="Enter your email" IsVisible="False" Keyboard="Email" />
+            <Button x:Name="ForgotPasswordSubmitButton"
+                    Text="Submit"
+                    Clicked="OnForgotPasswordSubmitClicked"
+                    BackgroundColor="#0e3f88"
+                    TextColor="White"
+                    CornerRadius="20"
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand"
+                    IsVisible="False" />
         </StackLayout>
     </Frame>
 </ContentPage>
