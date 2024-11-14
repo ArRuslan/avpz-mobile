@@ -8,6 +8,7 @@ namespace UniMobileProject.src.Views
     {
         private readonly BasicAuthService _authService;
         private readonly ValidationService _validationService;
+        private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
 
         public RegisterPage(BasicAuthService authService, ValidationService validationService)
         {
@@ -44,7 +45,16 @@ namespace UniMobileProject.src.Views
 
             if (response is SuccessfulAuth)
             {
-                await DisplayAlert("Success", "Registered successfully!", "OK");
+                SuccessfulAuth succesfulAuthResponse = (SuccessfulAuth)response;
+                bool success = await _tokenMaintainer.SetToken(succesfulAuthResponse);
+                if (!success)
+                {
+                    await DisplayAlert("Error", "Something went wrong during authorization, please try again later", "Ok");
+                }
+                else
+                {
+                    await DisplayAlert("Success", "Registered successfully!", "OK");
+                }
                 //ClearFields();
                 await Navigation.PopAsync();
             }
@@ -62,17 +72,17 @@ namespace UniMobileProject.src.Views
                 return "Passwords do not match";
 
             // Валідація електронної пошти
-            var (isEmailValid, emailError) = _validationService.EmailValidation(email);
+            var (isEmailValid, emailError) = _validationService.ValidateEmail(email);
             if (!isEmailValid)
                 return emailError;
 
             // Валідація пароля
-            var (isPasswordValid, passwordError) = _validationService.PasswordValidation(password);
+            var (isPasswordValid, passwordError) = _validationService.ValidatePassword(password);
             if (!isPasswordValid)
                 return passwordError;
 
             // Валідація номера телефону
-            var (isPhoneNumberValid, phoneError) = _validationService.PhoneNumberValidation(phoneNumber);
+            var (isPhoneNumberValid, phoneError) = _validationService.ValidatePhoneNumber(phoneNumber);
             return isPhoneNumberValid ? null : phoneError;
         }
 

@@ -11,13 +11,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_NullInput_False()
+        public void ValidateEmail_NullInput_False()
         {
             //Arrange
             string email = null;
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.False(response.Item1);
@@ -25,13 +25,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_EmptyInput_False()
+        public void ValidateEmail_EmptyInput_False()
         {
             //Arrange
             string email = "";
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.False(response.Item1);
@@ -39,13 +39,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_WrongEmailForm_False()
+        public void ValidateEmail_WrongEmailForm_False()
         {
             //Arrange
             string email = "asdvxcsda.com";
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.False(response.Item1);
@@ -53,13 +53,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_CyrillicCharacters_False()
+        public void ValidateEmail_CyrillicCharacters_False()
         {
             // Arrange
             string email = "тест@example.com";
 
             // Act
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             // Assert
             Assert.False(response.Item1);
@@ -68,13 +68,13 @@ namespace UniMobileProject.Tests.ServiceTests
 
 
         [Fact]
-        public void EmailValidation_Correct_True()
+        public void ValidateEmail_Correct_True()
         {
             //Arrange
             string email = "someemail@gmail.com";
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.True(response.Item1);
@@ -82,13 +82,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_NullInput_False()
+        public void ValidatePassword_NullInput_False()
         {
             //Arrange
             string password = null;
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -96,13 +96,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_EmptyInput_False()
+        public void ValidatePassword_EmptyInput_False()
         {
             //Arrange
             string password = "";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -110,13 +110,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_ShortLength_False()
+        public void ValidatePassword_ShortLength_False()
         {
             //Arrange
             string password = "abc";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -125,13 +125,13 @@ namespace UniMobileProject.Tests.ServiceTests
 
 
         [Fact]
-        public void PasswordValidation_NoSpecialCharacter_False()
+        public void ValidatePassword_NoSpecialCharacter_False()
         {
             //Arrange
             string password = "Abcde73asdf";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -139,13 +139,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_NoUpperCase_False()
+        public void ValidatePassword_NoUpperCase_False()
         {
             //Arrange
             string password = "bcde73asdf_";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -153,13 +153,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_NoLowerCase_False()
+        public void ValidatePassword_NoLowerCase_False()
         {
             //Arrange
             string password = "BCSADFA123_";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -168,13 +168,13 @@ namespace UniMobileProject.Tests.ServiceTests
 
 
         [Fact]
-        public void PasswordValidation_NoNumbers_False()
+        public void ValidatePassword_NoNumbers_False()
         {
             //Arrange
             string password = "BCSADFAasd_";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.False(response.Item1);
@@ -182,13 +182,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_Correct_True()
+        public void ValidatePassword_Correct_True()
         {
             //Arrange
             string password = "BCSADFAasd_12";
 
             //Action
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             //Assert
             Assert.True(response.Item1);
@@ -196,13 +196,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_NullInput_False()
+        public void ValidatePhoneNumber_NullInput_False()
         {
             //Arrange
             string number = null;
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -210,13 +210,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_EmptyInput_False()
+        public void ValidatePhoneNumber_EmptyInput_False()
         {
             //Arrange
             string number = "";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -224,13 +224,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_WrongNumer_False()
+        public void ValidatePhoneNumber_WrongNumer_False()
         {
             //Arrange
             string number = "2312412412";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -238,13 +238,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_WrongInternationalNumber_False()
+        public void ValidatePhoneNumber_WrongInternationalNumber_False()
         {
             //Arrange
             string number = "+3802312412412";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -252,13 +252,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_CorrectUA_True()
+        public void ValidatePhoneNumber_CorrectUA_True()
         {
             //Arrange
             string number = "+380914819608";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.True(response.Item1);
@@ -266,13 +266,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_CorrectUS_True()
+        public void ValidatePhoneNumber_CorrectUS_True()
         {
             //Arrange
             string number = "+12154567890";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.True(response.Item1);
@@ -280,13 +280,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_EmailWithSpecialChars_True()
+        public void ValidateEmail_EmailWithSpecialChars_True()
         {
             //Arrange
             string email = "user.name+tag@example.com";
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.True(response.Item1);
@@ -296,13 +296,13 @@ namespace UniMobileProject.Tests.ServiceTests
         
 
         [Fact]
-        public void PhoneNumberValidation_NumberWithSpaces_False()
+        public void ValidatePhoneNumber_NumberWithSpaces_False()
         {
             //Arrange
             string number = "+38 091 481 9608";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -311,13 +311,13 @@ namespace UniMobileProject.Tests.ServiceTests
 
 
         [Fact]
-        public void PhoneNumberValidation_InvalidCountryCode_False()
+        public void ValidatePhoneNumber_InvalidCountryCode_False()
         {
             //Arrange
             string number = "+999914819608";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -325,13 +325,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_ShortPhoneNumber_False()
+        public void ValidatePhoneNumber_ShortPhoneNumber_False()
         {
             //Arrange
             string number = "+38091";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -339,13 +339,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_LongPhoneNumber_False()
+        public void ValidatePhoneNumber_LongPhoneNumber_False()
         {
             //Arrange
             string number = "+38091481960812345"; // Слишком длинный номер
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.False(response.Item1);
@@ -353,13 +353,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PhoneNumberValidation_ValidPhoneNumberWithRegionCode_True()
+        public void ValidatePhoneNumber_ValidPhoneNumberWithRegionCode_True()
         {
             //Arrange
             string number = "+380914819608";
 
             //Action
-            var response = _service.PhoneNumberValidation(number);
+            var response = _service.ValidatePhoneNumber(number);
 
             //Assert
             Assert.True(response.Item1);
@@ -368,13 +368,13 @@ namespace UniMobileProject.Tests.ServiceTests
 
 
         [Fact]
-        public void EmailValidation_ChineseCharacters_False()
+        public void ValidateEmail_ChineseCharacters_False()
         {
             // Arrange
             string email = "用户@example.com"; // "用户" means "user" in Chinese
 
             // Act
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             // Assert
             Assert.False(response.Item1);
@@ -382,13 +382,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_ArabicCharacters_False()
+        public void ValidateEmail_ArabicCharacters_False()
         {
             // Arrange
             string email = "اختبار@example.com"; // "اختبار" means "test" in Arabic
 
             // Act
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             // Assert
             Assert.False(response.Item1);
@@ -396,13 +396,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_EmailWithJapaneseCharacters_False()
+        public void ValidateEmail_EmailWithJapaneseCharacters_False()
         {
             // Arrange
             string email = "テスト@example.com"; // "テスト" means "test" in Japanese
 
             // Act
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             // Assert
             Assert.False(response.Item1);
@@ -410,13 +410,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void EmailValidation_WhiteSpaceInEmail_False()
+        public void ValidateEmail_WhiteSpaceInEmail_False()
         {
             //Arrange
             string email = "user @example.com";
 
             //Action
-            var response = _service.EmailValidation(email);
+            var response = _service.ValidateEmail(email);
 
             //Assert
             Assert.False(response.Item1);
@@ -424,13 +424,13 @@ namespace UniMobileProject.Tests.ServiceTests
         }
 
         [Fact]
-        public void PasswordValidation_WithSpaces_False()
+        public void ValidatePassword_WithSpaces_False()
         {
             // Arrange
             string password = "Pass word 123!";
 
             // Act
-            var response = _service.PasswordValidation(password);
+            var response = _service.ValidatePassword(password);
 
             // Assert
             Assert.False(response.Item1);
