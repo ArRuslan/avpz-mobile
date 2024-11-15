@@ -2,7 +2,7 @@
 
 namespace UniMobileProject.src.Models.ServiceModels.AuthModels
 {
-    public class FailedAuth : AuthResponse
+    public class FailedAuth : RequestResponse
     {
         [JsonPropertyName("errors")]
         public List<string> Errors { get; set; } = new List<string>();

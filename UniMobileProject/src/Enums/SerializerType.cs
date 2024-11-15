@@ -9,6 +9,7 @@ namespace UniMobileProject.src.Enums
     public enum SerializerType
     {
         Auth,
+        Profile,
         // New will be added during development
     }
 }

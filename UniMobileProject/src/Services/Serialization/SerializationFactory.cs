@@ -9,6 +9,7 @@ namespace UniMobileProject.src.Services.Serialization
             return type switch
             {
                 SerializerType.Auth => new AuthSerializer(),
+                SerializerType.Profile => new ProfileSerializer(),
                 _ => throw new ArgumentException($"Can't create a serializer with an unspecified type: {nameof(type)}")
             };
         }

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using UniMobileProject.src.Models.ServiceModels;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 
 namespace UniMobileProject.src.Services.Serialization
@@ -8,7 +9,7 @@ namespace UniMobileProject.src.Services.Serialization
     {
         public async Task<T> Deserialize<T>(string content)
         {
-            AuthResponse? response;
+            RequestResponse? response;
             MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
             if (typeof(T).Equals(typeof(SuccessfulAuth)))
             {

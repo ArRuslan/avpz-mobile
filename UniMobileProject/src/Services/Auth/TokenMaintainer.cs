@@ -5,13 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Database;
+using UniMobileProject.src.Services.Database.Models;
 
 namespace UniMobileProject.src.Services.Auth
 {
     public class TokenMaintainer
     {
-        DatabaseService _dbService = new DatabaseService();
-        
+        DatabaseService _dbService;
+        public TokenMaintainer(string testDbPath)
+        {
+            _dbService = new DatabaseService(testDbPath);
+        }
+        public TokenMaintainer()
+        {
+            _dbService = new DatabaseService();
+        }
+
         public async Task<bool> SetToken(SuccessfulAuth authData)
         {
             var token = await _dbService.GetToken();
@@ -25,6 +34,12 @@ namespace UniMobileProject.src.Services.Auth
                 success = await _dbService.UpdateToken(token);
             }
             return success;
+        }
+
+        public async Task<Token?> GetToken()
+        {
+            var token = await _dbService.GetToken();
+            return token;
         }
         // TODO
         /*
