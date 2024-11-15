@@ -2,6 +2,8 @@ using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.Validation;
 using UniMobileProject.src.Services.ReCaptcha;
+using Microsoft.Maui.ApplicationModel.Communication;
+using PhoneNumbers;
 
 namespace UniMobileProject.src.Views
 {
@@ -18,14 +20,6 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
-
-            CaptchaWebView.Source = new HtmlWebViewSource
-            {
-                BaseUrl = ReCaptchaService.baseUrl,
-                Html = ReCaptchaService.captchaHtml
-            };
-
-            CaptchaWebView.Navigated += OnCaptchaNavigated;
         }
 
         private async void OnRegisterButtonClicked(object sender, EventArgs e)
@@ -42,19 +36,30 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
+            // Створюємо та показуємо попап
+            var captchaPopup = new ReCaptchaPopup();
+            await Navigation.PushModalAsync(captchaPopup);
+
+            // Очікуємо завершення попапу
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+
+            await RegisterUser();
+        }
+
+        private async Task RegisterUser()
+        {
             if (string.IsNullOrEmpty(_captchaToken))
             {
-                await DisplayAlert("Error", "Please complete the reCAPTCHA.", "OK");
+                await DisplayAlert("Error", "Failed to verify reCAPTCHA.", "OK");
                 return;
             }
 
-            // Якщо валідація пройдена, створюємо модель і викликаємо метод реєстрації
             var model = new RegisterModel(
-                email: email,
-                password: password,
+                email: UsernameEntry.Text,
+                password: PasswordEntry.Text,
                 firstName: FirstNameEntry.Text,
                 lastName: LastNameEntry.Text,
-                phoneNumber: phoneNumber,
+                phoneNumber: PhoneNumberEntry.Text,
                 captchaKey: _captchaToken
             );
 
@@ -101,17 +106,6 @@ namespace UniMobileProject.src.Views
             // Валідація номера телефону
             var (isPhoneNumberValid, phoneError) = _validationService.ValidatePhoneNumber(phoneNumber);
             return isPhoneNumberValid ? null : phoneError;
-        }
-
-        private async void OnCaptchaNavigated(object sender, WebNavigatedEventArgs e)
-        {
-            _captchaToken = await ReCaptchaService.HandleCaptchaNavigation(e);
-
-            if (!string.IsNullOrEmpty(_captchaToken))
-            {
-                CaptchaWebView.IsVisible = false;
-                await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
-            }
         }
 
         private void ClearFields()

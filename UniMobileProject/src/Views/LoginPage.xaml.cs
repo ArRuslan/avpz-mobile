@@ -1,3 +1,4 @@
+using Microsoft.Maui.ApplicationModel.Communication;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.ReCaptcha;
@@ -18,14 +19,6 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
-
-            CaptchaWebView.Source = new HtmlWebViewSource
-            {
-                BaseUrl = ReCaptchaService.baseUrl,
-                Html = ReCaptchaService.captchaHtml
-            };
-
-            CaptchaWebView.Navigated += OnCaptchaNavigated;
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -41,14 +34,25 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
+            // —творюЇмо та показуЇмо попап
+            var captchaPopup = new ReCaptchaPopup();
+            await Navigation.PushModalAsync(captchaPopup);
+
+            // ќч≥куЇмо завершенн€ попапу
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+
+            await LoginUser();
+        }
+
+        private async Task LoginUser()
+        {
             if (string.IsNullOrEmpty(_captchaToken))
             {
-                await DisplayAlert("Error", "Please complete the reCAPTCHA.", "OK");
+                await DisplayAlert("Error", "Failed to verify reCAPTCHA.", "OK");
                 return;
             }
 
-            // якщо вал≥дац≥€ усп≥шна, виконуЇмо аутентиф≥кац≥ю
-            var model = new LoginModel(email: email, password: password);
+            var model = new LoginModel(email: UsernameEntry.Text, password: PasswordEntry.Text);
             var response = await _authService.Login(model);
 
             if (response is SuccessfulAuth)
@@ -75,23 +79,6 @@ namespace UniMobileProject.src.Views
         {
             _captchaToken = String.Empty;
             await Navigation.PushAsync(new RegisterPage(_authService, _validationService));
-            CaptchaWebView.IsVisible = true;
-            CaptchaWebView.Source = new HtmlWebViewSource
-            {
-                BaseUrl = ReCaptchaService.baseUrl,
-                Html = ReCaptchaService.captchaHtml
-            };
-        }
-
-        private async void OnCaptchaNavigated(object sender, WebNavigatedEventArgs e)
-        {
-            _captchaToken = await ReCaptchaService.HandleCaptchaNavigation(e);
-
-            if (!string.IsNullOrEmpty(_captchaToken))
-            {
-                CaptchaWebView.IsVisible = false;
-                await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
-            }
         }
 
         private string? ValidateLoginInputs(string email, string password)

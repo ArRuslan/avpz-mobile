@@ -9,15 +9,13 @@
         <StackLayout Spacing="15">
             <Label Text="Register" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
 
-            <Entry x:Name="FirstNameEntry" Placeholder="First Name" />
-            <Entry x:Name="LastNameEntry" Placeholder="Last Name" />
-            <Entry x:Name="UsernameEntry" Placeholder="Email" Keyboard="Email" />
-            <Entry x:Name="PhoneNumberEntry" Placeholder="Phone Number" Keyboard="Telephone" />
+            <Entry x:Name="FirstNameEntry" Placeholder="First Name" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+            <Entry x:Name="LastNameEntry" Placeholder="Last Name" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+            <Entry x:Name="UsernameEntry" Placeholder="Email" Keyboard="Email" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+            <Entry x:Name="PhoneNumberEntry" Placeholder="Phone Number" Keyboard="Telephone" TextColor="#000000" PlaceholderColor="#9f9f9f" />
 
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
-            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" />
-            
-            <WebView x:Name="CaptchaWebView"/>
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" TextColor="#000000" PlaceholderColor="#9f9f9f" />
 
             <Button Text="Register" 
                     Clicked="OnRegisterButtonClicked" 

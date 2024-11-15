@@ -8,11 +8,9 @@
     <Frame Margin="20" Padding="10" CornerRadius="15" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
         <StackLayout Spacing="20">
             <Label Text="Login" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
-            
-            <Entry x:Name="UsernameEntry" Placeholder="Username" Keyboard="Email" />
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
 
-            <WebView x:Name="CaptchaWebView"/>
+            <Entry x:Name="UsernameEntry" Placeholder="Username" Keyboard="Email" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" TextColor="#000000" PlaceholderColor="#9f9f9f" />
 
             <Button Text="Login"
                     Clicked="OnLoginButtonClicked"
