@@ -62,7 +62,7 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
         }
 
         [Fact]
-        private async void SerializeLoginModel_CorrectData_True()
+        private void SerializeLoginModel_CorrectData_True()
         {
             foreach(var (input, expected) in loginModelSerializationData)
             {

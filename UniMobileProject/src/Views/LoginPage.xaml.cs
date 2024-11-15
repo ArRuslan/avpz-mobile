@@ -9,6 +9,7 @@ namespace UniMobileProject.src.Views
     {
         private readonly BasicAuthService _authService;
         private readonly ValidationService _validationService;
+        private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
 
         private string _captchaToken = "";
 
@@ -52,7 +53,16 @@ namespace UniMobileProject.src.Views
 
             if (response is SuccessfulAuth)
             {
-                await DisplayAlert("Success", "Logged in successfully!", "OK");
+                SuccessfulAuth successfulAuthResponse = (SuccessfulAuth)response;
+                bool success = await _tokenMaintainer.SetToken(successfulAuthResponse);
+                if (!success)
+                {
+                    await DisplayAlert("Error", "Something went wrong during authorization, please try again later", "Ok");
+                }
+                else
+                {
+                    await DisplayAlert("Success", "Logged in successfully!", "OK");
+                }
             }
             else if (response is FailedAuth failedResponse)
             {
@@ -87,12 +97,12 @@ namespace UniMobileProject.src.Views
         private string? ValidateLoginInputs(string email, string password)
         {
             // Валідація електронної пошти
-            var (isEmailValid, emailError) = _validationService.EmailValidation(email);
+            var (isEmailValid, emailError) = _validationService.ValidateEmail(email);
             if (!isEmailValid)
                 return emailError;
 
             // Валідація пароля
-            var (isPasswordValid, passwordError) = _validationService.PasswordValidation(password);
+            var (isPasswordValid, passwordError) = _validationService.ValidatePassword(password);
             return isPasswordValid ? null : passwordError;
         }
     }

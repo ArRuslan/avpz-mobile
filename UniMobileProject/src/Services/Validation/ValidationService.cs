@@ -44,7 +44,7 @@ namespace UniMobileProject.src.Services.Validation
             //};
 
         }
-        public (bool, string?) EmailValidation(string email)
+        public (bool, string?) ValidateEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
                 return (false, "Email was null or empty");
@@ -61,7 +61,7 @@ namespace UniMobileProject.src.Services.Validation
         }
 
 
-        public (bool, string?) PasswordValidation(string password)
+        public (bool, string?) ValidatePassword(string password)
         {
             foreach (var (condition, message) in passwordRules)
             {
@@ -70,7 +70,7 @@ namespace UniMobileProject.src.Services.Validation
             return (true, null);
         }
 
-        public (bool, string?) PhoneNumberValidation(string number)
+        public (bool, string?) ValidatePhoneNumber(string number)
         {
             if (string.IsNullOrEmpty(number))
                 return (false, "Number is null or empty");
@@ -93,9 +93,17 @@ namespace UniMobileProject.src.Services.Validation
                 return (false, "Phone number is not valid");
             }
         }
-        private static bool ContainsNonEnglishCharacters(string input)
+        private bool ContainsNonEnglishCharacters(string input)
         {
             return input.Any(ch => ch > 127);
+        }
+
+        public (bool, string?) ValidateName(string input)
+        {
+            bool isCorrect = input.All(a => Char.IsAsciiLetter(a));
+            return isCorrect ? 
+                (isCorrect, null) : 
+                (isCorrect, "Firstname and lastname should contain only latin letters");
         }
     }
 }
