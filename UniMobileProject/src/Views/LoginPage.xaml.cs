@@ -12,7 +12,7 @@ namespace UniMobileProject.src.Views
         private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
 
         private string _captchaToken = "";
-
+        private bool isForgotPasswordMode = false;
         public LoginPage(BasicAuthService authService, ValidationService validationService)
         {
             InitializeComponent();
@@ -105,5 +105,35 @@ namespace UniMobileProject.src.Views
             var (isPasswordValid, passwordError) = _validationService.ValidatePassword(password);
             return isPasswordValid ? null : passwordError;
         }
+
+        private async void OnForgotPasswordClicked(object sender, EventArgs e)
+        {
+            isForgotPasswordMode = !isForgotPasswordMode;
+            ForgotPasswordEmailEntry.IsVisible = isForgotPasswordMode;
+            ForgotPasswordSubmitButton.IsVisible = isForgotPasswordMode;
+        }
+
+        private async void OnForgotPasswordSubmitClicked(object sender, EventArgs e)
+        {
+            string email = ForgotPasswordEmailEntry.Text;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                await DisplayAlert("Error", "Please enter your email address.", "OK");
+                return;
+            }
+
+            bool isSuccess = await _authService.RequestPasswordReset(email);
+
+            if (isSuccess)
+            {
+                await DisplayAlert("Success", "Password reset link has been sent to your email.", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Error", "Failed to send password reset link. Please try again.", "OK");
+            }
+        }
+
     }
 }
