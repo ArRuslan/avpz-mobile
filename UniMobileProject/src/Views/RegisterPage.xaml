@@ -5,17 +5,19 @@
              Title="Register"
              BackgroundColor="White">
     
-    <Frame Margin="30" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
-        <StackLayout Spacing="20">
-        <Label Text="Register" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
+    <Frame Margin="20" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
+        <StackLayout Spacing="15">
+            <Label Text="Register" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
 
-        <Entry x:Name="FirstNameEntry" Placeholder="First Name" />
-        <Entry x:Name="LastNameEntry" Placeholder="Last Name" />
-        <Entry x:Name="UsernameEntry" Placeholder="Email" Keyboard="Email" />
-        <Entry x:Name="PhoneNumberEntry" Placeholder="Phone Number" Keyboard="Telephone" />
+            <Entry x:Name="FirstNameEntry" Placeholder="First Name" />
+            <Entry x:Name="LastNameEntry" Placeholder="Last Name" />
+            <Entry x:Name="UsernameEntry" Placeholder="Email" Keyboard="Email" />
+            <Entry x:Name="PhoneNumberEntry" Placeholder="Phone Number" Keyboard="Telephone" />
 
-        <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
-        <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" />
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" />
+            
+            <WebView x:Name="CaptchaWebView"/>
 
             <Button Text="Register" 
                     Clicked="OnRegisterButtonClicked" 

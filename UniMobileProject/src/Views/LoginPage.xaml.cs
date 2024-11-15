@@ -1,5 +1,6 @@
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
+using UniMobileProject.src.Services.ReCaptcha;
 using UniMobileProject.src.Services.Validation;
 
 namespace UniMobileProject.src.Views
@@ -10,11 +11,21 @@ namespace UniMobileProject.src.Views
         private readonly ValidationService _validationService;
         private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
 
+        private string _captchaToken = "";
+
         public LoginPage(BasicAuthService authService, ValidationService validationService)
         {
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
+
+            CaptchaWebView.Source = new HtmlWebViewSource
+            {
+                BaseUrl = ReCaptchaService.baseUrl,
+                Html = ReCaptchaService.captchaHtml
+            };
+
+            CaptchaWebView.Navigated += OnCaptchaNavigated;
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -27,6 +38,12 @@ namespace UniMobileProject.src.Views
             if (validationError != null)
             {
                 await DisplayAlert("Error", validationError, "OK");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(_captchaToken))
+            {
+                await DisplayAlert("Error", "Please complete the reCAPTCHA.", "OK");
                 return;
             }
 
@@ -56,7 +73,25 @@ namespace UniMobileProject.src.Views
 
         private async void OnNavigateToRegister(object sender, EventArgs e)
         {
+            _captchaToken = String.Empty;
             await Navigation.PushAsync(new RegisterPage(_authService, _validationService));
+            CaptchaWebView.IsVisible = true;
+            CaptchaWebView.Source = new HtmlWebViewSource
+            {
+                BaseUrl = ReCaptchaService.baseUrl,
+                Html = ReCaptchaService.captchaHtml
+            };
+        }
+
+        private async void OnCaptchaNavigated(object sender, WebNavigatedEventArgs e)
+        {
+            _captchaToken = await ReCaptchaService.HandleCaptchaNavigation(e);
+
+            if (!string.IsNullOrEmpty(_captchaToken))
+            {
+                CaptchaWebView.IsVisible = false;
+                await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
+            }
         }
 
         private string? ValidateLoginInputs(string email, string password)

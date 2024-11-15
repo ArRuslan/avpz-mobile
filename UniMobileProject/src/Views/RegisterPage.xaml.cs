@@ -1,6 +1,7 @@
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.Validation;
+using UniMobileProject.src.Services.ReCaptcha;
 
 namespace UniMobileProject.src.Views
 {
@@ -10,11 +11,21 @@ namespace UniMobileProject.src.Views
         private readonly ValidationService _validationService;
         private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
 
+        private string _captchaToken = ""; 
+
         public RegisterPage(BasicAuthService authService, ValidationService validationService)
         {
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
+
+            CaptchaWebView.Source = new HtmlWebViewSource
+            {
+                BaseUrl = ReCaptchaService.baseUrl,
+                Html = ReCaptchaService.captchaHtml
+            };
+
+            CaptchaWebView.Navigated += OnCaptchaNavigated;
         }
 
         private async void OnRegisterButtonClicked(object sender, EventArgs e)
@@ -31,6 +42,12 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
+            if (string.IsNullOrEmpty(_captchaToken))
+            {
+                await DisplayAlert("Error", "Please complete the reCAPTCHA.", "OK");
+                return;
+            }
+
             // якщо вал≥дац≥€ пройдена, створюЇмо модель ≥ викликаЇмо метод реЇстрац≥њ
             var model = new RegisterModel(
                 email: email,
@@ -38,7 +55,7 @@ namespace UniMobileProject.src.Views
                 firstName: FirstNameEntry.Text,
                 lastName: LastNameEntry.Text,
                 phoneNumber: phoneNumber,
-                captchaKey: "your_captcha_key_here"
+                captchaKey: _captchaToken
             );
 
             var response = await _authService.Register(model);
@@ -84,6 +101,17 @@ namespace UniMobileProject.src.Views
             // ¬ал≥дац≥€ номера телефону
             var (isPhoneNumberValid, phoneError) = _validationService.ValidatePhoneNumber(phoneNumber);
             return isPhoneNumberValid ? null : phoneError;
+        }
+
+        private async void OnCaptchaNavigated(object sender, WebNavigatedEventArgs e)
+        {
+            _captchaToken = await ReCaptchaService.HandleCaptchaNavigation(e);
+
+            if (!string.IsNullOrEmpty(_captchaToken))
+            {
+                CaptchaWebView.IsVisible = false;
+                await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
+            }
         }
 
         private void ClearFields()
