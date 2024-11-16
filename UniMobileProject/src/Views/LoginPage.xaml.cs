@@ -65,7 +65,8 @@ namespace UniMobileProject.src.Views
                 }
                 else
                 {
-                    await DisplayAlert("Success", "Logged in successfully!", "OK");
+                    // Встановлюємо MainTabbedPage як нову кореневу сторінку
+                    Application.Current.MainPage = new MainTabbedPage();
                 }
             }
             else if (response is FailedAuth failedResponse)

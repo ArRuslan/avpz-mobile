@@ -25,9 +25,6 @@ public partial class ReCaptchaPopup : ContentPage
 
         if (!string.IsNullOrEmpty(captchaToken))
         {
-            CaptchaWebView.IsVisible = false;
-            await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
-
             // Повертаємо токен і закриваємо вікно
             CaptchaTokenCompletionSource.SetResult(captchaToken);
             await Navigation.PopModalAsync();
