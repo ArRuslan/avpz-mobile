@@ -1,0 +1,28 @@
+name: BuildApk
+on:
+  push:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build apks
+        uses: addnab/docker-run-action@v3
+        with:
+          image: conneqthub/dotnet-maui-android:latest
+          options: -v ${{ github.workspace }}:/build
+          run: |
+              cd /build
+              keytool -genkey -keypass _debug_ -storepass _debug_ -dname "CN=HHB" -keystore debug.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias debug -noprompt
+              cd UniMobileProject
+              sed -i 's/>net8.0;net8.0-android;net8.0-ios;net8.0-maccatalyst</>net8.0;net8.0-android</g' UniMobileProject.csproj
+              dotnet publish -f net8.0-android -c Debug -p:ApplicationId=com.hhb.mobile -p:AndroidKeyStore=true -p:AndroidSigningKeyStore=/build/debug.keystore -p:AndroidSigningKeyAlias=debug -p:AndroidSigningKeyPass=_debug_ -p:AndroidSigningStorePass=_debug_ -p:EmbedAssembliesIntoApk=true -p:AndroidCreatePackagePerAbi=true
+
+      - name: Upload apks
+        uses: actions/upload-artifact@v4
+        with:
+          name: apks
+          path: UniMobileProject/bin/Debug/net8*-android/com.hhb.mobile-*-Signed.apk
