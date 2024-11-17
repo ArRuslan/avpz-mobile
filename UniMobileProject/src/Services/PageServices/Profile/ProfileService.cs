@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels;
+using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Database.Models;
@@ -45,6 +46,54 @@ namespace UniMobileProject.src.Services.PageServices.Profile
                 serializedResponse = await _serializer.Deserialize<ErrorResponse>(clientResponseString);
             }
             return serializedResponse;
+        }
+        public async Task<RequestResponse> EnableMfa(EnableMfaModel model)
+        {
+            string json = _serializer.Serialize<EnableMfaModel>(model);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("mfa/enable", httpContent);
+
+                if (response == null)
+                {
+                    Console.WriteLine("Error: No response from the server.");
+                    throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
+                }
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("MFA enabled successfully: " + responseContent);
+                    return await _serializer.Deserialize<RequestResponse>(responseContent);
+                }
+                else
+                {
+                    Console.WriteLine("Failed to enable MFA: " + responseContent);
+                    // Логируем ответ для лучшего анализа ошибки
+                    Console.WriteLine($"Error: {response.StatusCode}, Response: {responseContent}");
+                    return await _serializer.Deserialize<FailedAuth>(responseContent);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<RequestResponse> DisableMfa(DisableMfaModel model)
+        {
+            string json = _serializer.Serialize<DisableMfaModel>(model);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("/mfa/disable", httpContent) ??
+                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
+
+            return response.IsSuccessStatusCode
+                ? await _serializer.Deserialize<RequestResponse>(await response.Content.ReadAsStringAsync())
+                : throw new InvalidOperationException("Failed to disable MFA.");
         }
     }
 }
