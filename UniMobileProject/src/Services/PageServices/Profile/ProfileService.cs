@@ -77,15 +77,31 @@ namespace UniMobileProject.src.Services.PageServices.Profile
 
         public async Task<RequestResponse> DisableMfa(DisableMfaModel model)
         {
-            string json = _serializer.Serialize<DisableMfaModel>(model);
+            string json = _serializer.Serialize(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/mfa/disable", httpContent) ??
-                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
+            try
+            {
+                var response = await _httpClient.PostAsync("mfa/disable", httpContent);
+                string responseContent = await response.Content.ReadAsStringAsync();
 
-            return response.IsSuccessStatusCode
-                ? await _serializer.Deserialize<RequestResponse>(await response.Content.ReadAsStringAsync())
-                : throw new InvalidOperationException("Failed to disable MFA.");
+                RequestResponse result;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await _serializer.Deserialize<ProfileModel>(responseContent);
+                }
+                else
+                {
+                    result = await _serializer.Deserialize<ErrorResponse>(responseContent);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during DisableMfa: {ex.Message}");
+                throw;
+            }
         }
+
     }
 }

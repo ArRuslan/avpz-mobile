@@ -43,7 +43,6 @@ namespace UniMobileProject.src.Views
         {
             try
             {
-                string userPassword = await PromptUserForPassword();
 
                 _secretKey = GenerateSecretKey();
 
@@ -58,43 +57,68 @@ namespace UniMobileProject.src.Views
             }
         }
 
-        private async void OnEnableMfaClicked(object sender, EventArgs e)
+        private async void OnToggleMfaClicked(object sender, EventArgs e)
         {
             try
             {
+                string userPassword = await PromptUserForPassword();
                 string mfaCode = MfaCodeEntry.Text;
 
-                if (string.IsNullOrEmpty(mfaCode))
+                if (_isMfaEnabled)
                 {
-                    await DisplayAlert("Error", "Please enter the 6-digit code from your authenticator app.", "OK");
-                    return;
-                }
+                    // Отключение MFA
+                    var disableMfaModel = new DisableMfaModel(userPassword, mfaCode);
+                    var response = await _profileService.DisableMfa(disableMfaModel);
 
-                string userPassword = await PromptUserForPassword();
-                if (!ValidateMfaData(userPassword, _secretKey, mfaCode))
-                {
-                    return;
-                }
-
-                var enableMfaModel = new EnableMfaModel(userPassword, _secretKey, mfaCode);
-                var response = await _profileService.EnableMfa(enableMfaModel);
-
-                Console.WriteLine($"Response type: {response.GetType()}");
-
-                if (response is ProfileModel profileResponse)
-                {
-                    _isMfaEnabled = profileResponse.MfaEnabled;
-                    UpdateMfaButtonText();
-                    await DisplayAlert("Success", "MFA has been enabled.", "OK");
-                }
-                else if (response is FailedAuth failedAuthResponse)
-                {
-                    string errors = string.Join('\n', failedAuthResponse.Errors);
-                    await DisplayAlert("Error", errors, "OK");
+                    if (response is ProfileModel profileResponse)
+                    {
+                        _isMfaEnabled = profileResponse.MfaEnabled; // false после отключения
+                        UpdateMfaButtonText();
+                        await DisplayAlert("Success", "MFA has been disabled.", "OK");
+                    }
+                    else if (response is FailedAuth failedAuthResponse)
+                    {
+                        string errors = string.Join('\n', failedAuthResponse.Errors);
+                        await DisplayAlert("Error", errors, "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", "Unexpected response type.", "OK");
+                    }
                 }
                 else
                 {
-                    await DisplayAlert("Error", "Unexpected response type.", "OK");
+                    // Включение MFA
+
+                    if (string.IsNullOrEmpty(mfaCode))
+                    {
+                        await DisplayAlert("Error", "Please enter the 6-digit code from your authenticator app.", "OK");
+                        return;
+                    }
+
+                    if (!ValidateMfaData(userPassword, _secretKey, mfaCode))
+                    {
+                        return;
+                    }
+
+                    var enableMfaModel = new EnableMfaModel(userPassword, _secretKey, mfaCode);
+                    var response = await _profileService.EnableMfa(enableMfaModel);
+
+                    if (response is ProfileModel profileResponse)
+                    {
+                        _isMfaEnabled = profileResponse.MfaEnabled; // true после включения
+                        UpdateMfaButtonText();
+                        await DisplayAlert("Success", "MFA has been enabled.", "OK");
+                    }
+                    else if (response is FailedAuth failedAuthResponse)
+                    {
+                        string errors = string.Join('\n', failedAuthResponse.Errors);
+                        await DisplayAlert("Error", errors, "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", "Unexpected response type.", "OK");
+                    }
                 }
             }
             catch (Exception ex)
@@ -102,6 +126,7 @@ namespace UniMobileProject.src.Views
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
+
 
 
 

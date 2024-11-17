@@ -16,7 +16,8 @@
         <Entry x:Name="MfaCodeEntry" Placeholder="Enter 6-digit code" Keyboard="Numeric" />
 
         <!-- Кнопка активации MFA -->
-        <Button x:Name="ToggleMfaButton" Text="Enable MFA" Clicked="OnEnableMfaClicked" />
+        <Button x:Name = "ToggleMfaButton" Text="Enable MFA" Clicked="OnToggleMfaClicked" />
+
 
         <!-- Сообщение об ошибке -->
         <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
