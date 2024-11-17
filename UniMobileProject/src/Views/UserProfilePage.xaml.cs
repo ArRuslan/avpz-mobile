@@ -81,9 +81,9 @@ namespace UniMobileProject.src.Views
 
                 Console.WriteLine($"Response type: {response.GetType()}");
 
-                if (response is SuccessfulAuth)
+                if (response is ProfileModel profileResponse)
                 {
-                    _isMfaEnabled = true;
+                    _isMfaEnabled = profileResponse.MfaEnabled;
                     UpdateMfaButtonText();
                     await DisplayAlert("Success", "MFA has been enabled.", "OK");
                 }
@@ -102,6 +102,7 @@ namespace UniMobileProject.src.Views
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
+
 
 
         private async Task<string> PromptUserForPassword()
