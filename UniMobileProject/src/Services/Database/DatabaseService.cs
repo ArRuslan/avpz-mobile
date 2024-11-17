@@ -56,7 +56,7 @@ public class DatabaseService
 
         using var command = connection.CreateCommand();
         command.CommandText = @"
-INSERT INTO Tokens(TokenString, TimeSpan)
+INSERT OR REPLACE INTO Tokens(TokenString, TimeSpan)
 VALUES(@tokenString, @timeSpan);";
         command.Parameters.AddWithValue("@tokenString", token.TokenString);
         command.Parameters.AddWithValue("@timeSpan", token.ExpiresAtTimeSpan);
@@ -78,7 +78,7 @@ VALUES(@tokenString, @timeSpan);";
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM Tokens";
+        command.CommandText = @"SELECT * FROM Tokens ORDER BY Id DESC LIMIT 1";
         try
         {
             using var reader = await command.ExecuteReaderAsync();

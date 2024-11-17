@@ -26,7 +26,6 @@ namespace UniMobileProject.src.Views
             var email = UsernameEntry.Text;
             var password = PasswordEntry.Text;
 
-            // Валідація електронної пошти та пароля
             string? validationError = ValidateLoginInputs(email, password);
             if (validationError != null)
             {
@@ -34,12 +33,12 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
-            // Створюємо та показуємо попап
-            var captchaPopup = new ReCaptchaPopup();
+            /*var captchaPopup = new ReCaptchaPopup();
             await Navigation.PushModalAsync(captchaPopup);
 
             // Очікуємо завершення попапу
-            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;*/
+            _captchaToken = "123456789";
 
             await LoginUser();
         }

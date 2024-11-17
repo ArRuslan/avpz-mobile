@@ -2,6 +2,8 @@
 using System.Text.Json;
 using UniMobileProject.src.Models.ServiceModels;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
+using UniMobileProject.src.Services.Database;
+using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.Serialization;
 using UniMobileProject.src.Views;
@@ -12,10 +14,12 @@ namespace UniMobileProject.src.Services.Auth
     {
         private HttpService _httpService;
         private ISerializer _serializer;
+        private readonly DatabaseService _dbService;
         public BasicAuthService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory)
         {
             _httpService = httpServiceFactory.Create("auth");
             _serializer = serializationFactory.Create(Enums.SerializerType.Auth);
+            _dbService = new DatabaseService();
         }
 
         public async Task RequestMfaFlow(string mfaToken)
@@ -40,19 +44,36 @@ namespace UniMobileProject.src.Services.Auth
                 {
                     var root = document.RootElement;
 
-                    // Если сервер возвращает mfa_token, инициируем MFA flow
+                    // Проверяем, был ли возвращён MFA-токен
                     if (root.TryGetProperty("mfa_token", out var mfaTokenProperty))
                     {
                         string mfaToken = mfaTokenProperty.GetString()!;
                         Console.WriteLine("MFA token received. Redirecting to MFA Page...");
 
-                        // Запускаем MfaPage
                         await RequestMfaFlow(mfaToken);
-                        return new SuccessfulAuth { IsSuccess = true }; // Переход к MFA
+                        return new SuccessfulAuth { IsSuccess = true };
+                    }
+
+                    // Если MFA-токена нет, обрабатываем обычную авторизацию
+                    if (root.TryGetProperty("token", out var tokenProperty) &&
+                        root.TryGetProperty("expires_at", out var expiresAtProperty))
+                    {
+                        string tokenString = tokenProperty.GetString()!;
+                        long expiresAt = expiresAtProperty.GetInt64();
+
+                        // Сохраняем токен в базе данных
+                        var token = new Token
+                        {
+                            TokenString = tokenString,
+                            ExpiresAtTimeSpan = expiresAt
+                        };
+                        Console.WriteLine($"Logged in successfully with email: {model.Email}");
+                        await _dbService.AddToken(token);
+
+                        Console.WriteLine("Token saved to database.");
                     }
                 }
 
-                // Обычная успешная авторизация
                 RequestResponse successfulResponse = await _serializer.Deserialize<SuccessfulAuth>(responseBody);
                 return successfulResponse;
             }

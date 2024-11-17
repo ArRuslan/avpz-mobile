@@ -79,16 +79,22 @@ namespace UniMobileProject.src.Views
                 var enableMfaModel = new EnableMfaModel(userPassword, _secretKey, mfaCode);
                 var response = await _profileService.EnableMfa(enableMfaModel);
 
+                Console.WriteLine($"Response type: {response.GetType()}");
+
                 if (response is SuccessfulAuth)
                 {
                     _isMfaEnabled = true;
                     UpdateMfaButtonText();
                     await DisplayAlert("Success", "MFA has been enabled.", "OK");
                 }
+                else if (response is FailedAuth failedAuthResponse)
+                {
+                    string errors = string.Join('\n', failedAuthResponse.Errors);
+                    await DisplayAlert("Error", errors, "OK");
+                }
                 else
                 {
-                    string errors = string.Join('\n', ((FailedAuth)response).Errors);
-                    await DisplayAlert("Error", errors, "OK");
+                    await DisplayAlert("Error", "Unexpected response type.", "OK");
                 }
             }
             catch (Exception ex)
@@ -96,6 +102,7 @@ namespace UniMobileProject.src.Views
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
+
 
         private async Task<string> PromptUserForPassword()
         {

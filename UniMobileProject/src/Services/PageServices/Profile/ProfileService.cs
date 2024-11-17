@@ -49,36 +49,28 @@ namespace UniMobileProject.src.Services.PageServices.Profile
         }
         public async Task<RequestResponse> EnableMfa(EnableMfaModel model)
         {
-            string json = _serializer.Serialize<EnableMfaModel>(model);
+            string json = _serializer.Serialize(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
                 var response = await _httpClient.PostAsync("mfa/enable", httpContent);
-
-                if (response == null)
-                {
-                    Console.WriteLine("Error: No response from the server.");
-                    throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
-                }
-
                 string responseContent = await response.Content.ReadAsStringAsync();
+
+                RequestResponse result;
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("MFA enabled successfully: " + responseContent);
-                    return await _serializer.Deserialize<RequestResponse>(responseContent);
+                    result = await _serializer.Deserialize<ProfileModel>(responseContent);
                 }
                 else
                 {
-                    Console.WriteLine("Failed to enable MFA: " + responseContent);
-                    // Логируем ответ для лучшего анализа ошибки
-                    Console.WriteLine($"Error: {response.StatusCode}, Response: {responseContent}");
-                    return await _serializer.Deserialize<FailedAuth>(responseContent);
+                    result = await _serializer.Deserialize<ErrorResponse>(responseContent);
                 }
+                return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                Console.WriteLine($"An error occurred during EnableMfa: {ex.Message}");
                 throw;
             }
         }
