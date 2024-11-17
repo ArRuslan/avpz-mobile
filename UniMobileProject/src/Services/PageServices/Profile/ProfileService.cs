@@ -33,6 +33,7 @@ namespace UniMobileProject.src.Services.PageServices.Profile
             {
                 return null;
             }
+            _httpClient.DefaultRequestHeaders.Remove("x-token");
             _httpClient.DefaultRequestHeaders.Add("x-token", token.TokenString);
             var clientResponse = await _httpClient.GetAsync("info");
             string clientResponseString = await clientResponse.Content.ReadAsStringAsync();

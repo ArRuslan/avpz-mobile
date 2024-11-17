@@ -34,10 +34,34 @@ namespace UniMobileProject.src.Views
             UpdateMfaButtonText();
         }
 
-        private void UpdateMfaButtonText()
+        private async Task CheckMfaStatus()
+    {
+        try
         {
-            ToggleMfaButton.Text = _isMfaEnabled ? "Disable MFA" : "Enable MFA";
+            var profileResponse = await _profileService.GetProfileModel();
+            if (profileResponse is ProfileModel profile)
+            {
+                _isMfaEnabled = profile.MfaEnabled;
+                UpdateMfaButtonText(); // Обновляем текст кнопки в зависимости от состояния MFA
+            }
         }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"An error occurred while checking MFA status: {ex.Message}", "OK");
+        }
+    }
+
+    // Обновление текста кнопки в зависимости от состояния MFA
+    private void UpdateMfaButtonText()
+    {
+        ToggleMfaButton.Text = _isMfaEnabled ? "Disable MFA" : "Enable MFA";
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await CheckMfaStatus(); // Проверяем состояние MFA при загрузке страницы
+    }
 
         private async void OnGenerateMfaCodeClicked(object sender, EventArgs e)
         {

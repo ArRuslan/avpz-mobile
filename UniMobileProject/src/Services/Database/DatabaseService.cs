@@ -56,7 +56,7 @@ public class DatabaseService
 
         using var command = connection.CreateCommand();
         command.CommandText = @"
-INSERT OR REPLACE INTO Tokens(TokenString, TimeSpan)
+INSERT INTO Tokens(TokenString, TimeSpan)
 VALUES(@tokenString, @timeSpan);";
         command.Parameters.AddWithValue("@tokenString", token.TokenString);
         command.Parameters.AddWithValue("@timeSpan", token.ExpiresAtTimeSpan);
