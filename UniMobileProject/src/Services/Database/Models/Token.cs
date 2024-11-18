@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniMobileProject.src.Models.ServiceModels.AuthModels;
+﻿using UniMobileProject.src.Models.ServiceModels.AuthModels;
 
 namespace UniMobileProject.src.Services.Database.Models
 {
@@ -16,6 +11,7 @@ namespace UniMobileProject.src.Services.Database.Models
         {
             TokenString = authData.ResponseContent;
             ExpiresAtTimeSpan = authData.ExpiresAt;
+            Id = 1;
         }
         public int Id { get; set; }
         public string TokenString { get; set; } = string.Empty;
