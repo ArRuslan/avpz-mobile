@@ -2,8 +2,6 @@
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Auth;
-using UniMobileProject.src.Services.Database;
-using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Profile;
 using UniMobileProject.src.Services.Serialization;
@@ -50,6 +48,21 @@ namespace UniMobileProject.Tests.ServiceTests.ProfileTests
                 return isSuccess;
             }
             return false;
+        }
+
+        [Fact]
+        public async void UpdateProfile_RequestResponse_Correct()
+        {
+            var isLoggedIn = await Login();
+            Assert.True(isLoggedIn);
+            RequestResponse? response = await profileService.GetProfileModel();
+            Assert.NotNull(response);
+            Assert.True(response.IsSuccess);
+            ProfileModel model = (ProfileModel)response;
+            Assert.NotNull(model);
+            EditProfileModel editModel = new EditProfileModel { FirstName = "Johny", LastName = "Doe", PhoneNumber = model.PhoneNumber };
+            RequestResponse? editResponse = await profileService.UpdateProfile(editModel);
+            Assert.NotNull(editResponse);
         }
     }
 }

@@ -27,12 +27,10 @@ namespace UniMobileProject.src.Services.PageServices.Profile
         //Returns null when the token is expired
         public async Task<RequestResponse?> GetProfileModel()
         {
-            Token token = await _dbService.GetToken();
-            if (token.ExpiresAtTimeSpan < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            if (!await AddTokenToHeader())
             {
-                return null;
+                throw new Exception("Can't add token in http client");
             }
-            _httpClient.DefaultRequestHeaders.Add("x-token", token.TokenString);
             var clientResponse = await _httpClient.GetAsync("info");
             string clientResponseString = await clientResponse.Content.ReadAsStringAsync();
             RequestResponse serializedResponse;
@@ -45,6 +43,61 @@ namespace UniMobileProject.src.Services.PageServices.Profile
                 serializedResponse = await _serializer.Deserialize<ErrorResponse>(clientResponseString);
             }
             return serializedResponse;
+        }
+
+        public async Task<RequestResponse?> UpdateProfile(EditProfileModel model)
+        {
+            if (!await AddTokenToHeader())
+            {
+                throw new Exception("Can't add token in http client");
+            }
+
+            string json = _serializer.Serialize<EditProfileModel>(model);
+            if(json == null)
+            {
+                throw new ArgumentNullException("Parsed mdel can't be null");
+            }
+
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PatchAsync("info", httpContent) ??
+                throw new ArgumentNullException("Response from the server was not received");
+
+            if (response.IsSuccessStatusCode)
+            {
+                RequestResponse successfulResponse = await _serializer.Deserialize<ProfileModel>(await response.Content.ReadAsStringAsync());
+                return successfulResponse;
+            }
+            else
+            {
+                RequestResponse unsuccessfulResponse = await _serializer.Deserialize<ErrorResponse>(await response.Content.ReadAsStringAsync());
+                return unsuccessfulResponse;
+            }
+        }
+
+        private async Task<bool> AddTokenToHeader()
+        {
+            Token token = await _dbService.GetToken();
+            var currentTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            if (token.ExpiresAtTimeSpan < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            {
+                return false;
+            }
+            if (_httpClient.DefaultRequestHeaders.Contains("x-token"))
+            {
+                var header = _httpClient.DefaultRequestHeaders.First(a => a.Key == "x-token");
+                if (header.Value.Any(a => a == token.TokenString))
+                {
+                    return true;
+                }
+                else
+                {
+                    _httpClient.DefaultRequestHeaders.Remove("x-token");
+                    _httpClient.DefaultRequestHeaders.Add("x-token", token.TokenString);
+                    return true;
+                }
+            }
+            _httpClient.DefaultRequestHeaders.Add("x-token", token.TokenString);
+            return true;
         }
     }
 }
