@@ -32,7 +32,6 @@ namespace UniMobileProject.src.Services.PageServices.Profile
             {
                 throw new Exception("Can't add token in http client");
             }
-            _httpClient.DefaultRequestHeaders.Add("x-token", token.TokenString);
             var clientResponse = await _httpClient.GetAsync("info");
             string clientResponseString = await clientResponse.Content.ReadAsStringAsync();
             RequestResponse serializedResponse;

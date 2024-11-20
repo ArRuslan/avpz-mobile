@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniMobileProject.src.Models.ServiceModels.AuthModels;
+﻿using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Database.Models;
 
@@ -31,7 +26,7 @@ namespace UniMobileProject.src.Services.Auth
             }
             else
             {
-                success = await _dbService.UpdateToken(token);
+                success = await _dbService.UpdateToken(new Token(authData));
             }
             return success;
         }

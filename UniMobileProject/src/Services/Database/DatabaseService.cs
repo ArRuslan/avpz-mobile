@@ -1,11 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using SQLitePCL;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniMobileProject.src.Services.Database.Models;
 
 namespace UniMobileProject.src.Services.Database;
@@ -83,12 +78,13 @@ VALUES(@tokenString, @timeSpan);";
         {
             using var reader = await command.ExecuteReaderAsync();
             Token token = new Token();
+            int count = 0;
             while (await reader.ReadAsync())
             {
                 token.Id = reader.GetInt32(reader.GetOrdinal("Id"));
                 token.TokenString = reader.GetString(reader.GetOrdinal("TokenString"));
                 token.ExpiresAtTimeSpan = reader.GetInt64(reader.GetOrdinal("TimeSpan"));
-                break;
+                count++;
             }
             return token;
         }

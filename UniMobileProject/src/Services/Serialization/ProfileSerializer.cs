@@ -34,7 +34,8 @@ namespace UniMobileProject.src.Services.Serialization
 
         public string Serialize<T>(T model)
         {
-            return JsonSerializer.Serialize(model);
+            var json = JsonSerializer.Serialize<T>(model);
+            return json;
         }
     }
 }
