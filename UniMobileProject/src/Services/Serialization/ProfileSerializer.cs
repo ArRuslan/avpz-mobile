@@ -34,7 +34,7 @@ namespace UniMobileProject.src.Services.Serialization
 
         public string Serialize<T>(T model)
         {
-            throw new NotImplementedException();
+            return JsonSerializer.Serialize(model);
         }
     }
 }

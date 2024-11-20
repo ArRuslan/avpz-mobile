@@ -1,6 +1,7 @@
-using System.Xml;
+using System;
+using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels;
-using UniMobileProject.src.Models.ServiceModels.ProfileModels;
+using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Profile;
 using UniMobileProject.src.Services.Serialization;

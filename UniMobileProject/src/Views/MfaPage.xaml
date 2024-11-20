@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniMobileProject.src.Views.MfaPage"
+             Title="MFA Verification">
+    <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
+        <Label 
+            Text="Enter the 6-digit MFA code"
+            FontSize="24"
+            HorizontalOptions="Center" />
+
+        <Entry
+            x:Name="MfaCodeEntry"
+            Placeholder="6-digit code"
+            Keyboard="Numeric"
+            MaxLength="6"
+            FontSize="20"
+            HorizontalOptions="FillAndExpand" />
+
+        <Button
+            Text="Submit"
+            FontSize="20"
+            Clicked="OnSubmitClicked"
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>

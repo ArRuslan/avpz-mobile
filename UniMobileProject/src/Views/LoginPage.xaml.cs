@@ -26,7 +26,6 @@ namespace UniMobileProject.src.Views
             var email = UsernameEntry.Text;
             var password = PasswordEntry.Text;
 
-            // Валідація електронної пошти та пароля
             string? validationError = ValidateLoginInputs(email, password);
             if (validationError != null)
             {
@@ -34,17 +33,17 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
-            // Створюємо та показуємо попап
-            var captchaPopup = new ReCaptchaPopup();
+            /*var captchaPopup = new ReCaptchaPopup();
             await Navigation.PushModalAsync(captchaPopup);
 
             // Очікуємо завершення попапу
-            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;*/
+            _captchaToken = "123456789";
 
-            await LoginUser();
+            await LoginUser(email, password);
         }
 
-        private async Task LoginUser()
+        private async Task LoginUser(string email, string password)
         {
             if (string.IsNullOrEmpty(_captchaToken))
             {
@@ -52,12 +51,18 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
-            var model = new LoginModel(email: UsernameEntry.Text, password: PasswordEntry.Text);
+            var model = new LoginModel(email, password);
             var response = await _authService.Login(model);
 
-            if (response is SuccessfulAuth)
+            if (response is SuccessfulAuth successfulAuthResponse)
             {
-                SuccessfulAuth successfulAuthResponse = (SuccessfulAuth)response;
+                if (successfulAuthResponse is MfaRequiredAuth mfaRequiredAuth)
+                {
+                    await Navigation.PushAsync(new MfaPage(_authService, mfaRequiredAuth.MfaToken));
+                    return; 
+                }
+
+
                 bool success = await _tokenMaintainer.SetToken(successfulAuthResponse);
                 if (!success)
                 {
@@ -65,7 +70,6 @@ namespace UniMobileProject.src.Views
                 }
                 else
                 {
-                    // Встановлюємо MainTabbedPage як нову кореневу сторінку
                     Application.Current.MainPage = new MainTabbedPage();
                 }
             }

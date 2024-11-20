@@ -1,0 +1,480 @@
+diff --git a/UniMobileProject/UniMobileProject.csproj b/UniMobileProject/UniMobileProject.csproj
+index 60e82a5..b06f2cd 100644
+--- a/UniMobileProject/UniMobileProject.csproj
++++ b/UniMobileProject/UniMobileProject.csproj
+@@ -67,6 +67,7 @@
+ 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+ 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+ 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
++		<PackageReference Include="QRCoder" Version="1.6.0" />
+ 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+ 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
+ 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+@@ -82,6 +83,9 @@
+ 	  <MauiXaml Update="src\Views\MainTabbedPage.xaml">
+ 	    <Generator>MSBuild:Compile</Generator>
+ 	  </MauiXaml>
++	  <MauiXaml Update="src\Views\MfaPage.xaml">
++	    <Generator>MSBuild:Compile</Generator>
++	  </MauiXaml>
+ 	  <MauiXaml Update="src\Views\ReCaptchaPopup.xaml">
+ 	    <Generator>MSBuild:Compile</Generator>
+ 	  </MauiXaml>
+diff --git a/UniMobileProject/src/Services/Auth/BasicAuthService.cs b/UniMobileProject/src/Services/Auth/BasicAuthService.cs
+index 59c8f28..5727ccf 100644
+--- a/UniMobileProject/src/Services/Auth/BasicAuthService.cs
++++ b/UniMobileProject/src/Services/Auth/BasicAuthService.cs
+@@ -1,8 +1,10 @@
+ ﻿using System.Text;
++using System.Text.Json;
+ using UniMobileProject.src.Models.ServiceModels;
+ using UniMobileProject.src.Models.ServiceModels.AuthModels;
+ using UniMobileProject.src.Services.Http;
+ using UniMobileProject.src.Services.Serialization;
++using UniMobileProject.src.Views;
+ 
+ namespace UniMobileProject.src.Services.Auth
+ {
+@@ -16,13 +18,62 @@ namespace UniMobileProject.src.Services.Auth
+             _serializer = serializationFactory.Create(Enums.SerializerType.Auth);
+         }
+ 
++        public async Task RequestMfaFlow(string mfaToken)
++        {
++            // Открытие MfaPage для ввода кода
++            await Application.Current.MainPage.Navigation.PushAsync(new MfaPage(this, mfaToken));
++        }
++
+         public async Task<RequestResponse> Login(LoginModel model)
+         {
+             string json = _serializer.Serialize<LoginModel>(model);
+             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
++
+             var response = await _httpService.GetClient().PostAsync("login", httpContent) ??
+-                throw new ArgumentNullException("Response from the server was not received. " +
+-                "Internal server error happened");
++                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
++
++            string responseBody = await response.Content.ReadAsStringAsync();
++
++            if (response.IsSuccessStatusCode)
++            {
++                using (var document = JsonDocument.Parse(responseBody))
++                {
++                    var root = document.RootElement;
++
++                    // Если сервер возвращает mfa_token, инициируем MFA flow
++                    if (root.TryGetProperty("mfa_token", out var mfaTokenProperty))
++                    {
++                        string mfaToken = mfaTokenProperty.GetString()!;
++                        Console.WriteLine("MFA token received. Redirecting to MFA Page...");
++
++                        // Запускаем MfaPage
++                        await RequestMfaFlow(mfaToken);
++                        return new SuccessfulAuth { IsSuccess = true }; // Переход к MFA
++                    }
++                }
++
++                // Обычная успешная авторизация
++                RequestResponse successfulResponse = await _serializer.Deserialize<SuccessfulAuth>(responseBody);
++                return successfulResponse;
++            }
++            else
++            {
++                // Обработка ошибок
++                Console.WriteLine($"Error Response Body: {responseBody}");
++                Console.WriteLine($"Error Status Code: {response.StatusCode}");
++
++                RequestResponse unsuccessfulResponse = await _serializer.Deserialize<FailedAuth>(responseBody);
++                return unsuccessfulResponse;
++            }
++        }
++
++        public async Task<RequestResponse> LoginWithMfa(MfaLoginModel model)
++        {
++            string json = _serializer.Serialize<MfaLoginModel>(model);
++            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
++
++            var response = await _httpService.GetClient().PostAsync("login/mfa", httpContent) ??
++                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
+ 
+             if (response.IsSuccessStatusCode)
+             {
+@@ -38,6 +89,7 @@ namespace UniMobileProject.src.Services.Auth
+             }
+         }
+ 
++
+         public async Task<RequestResponse> Register(RegisterModel model)
+         {
+             string json = _serializer.Serialize<RegisterModel>(model);
+@@ -72,4 +124,4 @@ namespace UniMobileProject.src.Services.Auth
+         }
+ 
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/UniMobileProject/src/Services/PageServices/Profile/ProfileService.cs b/UniMobileProject/src/Services/PageServices/Profile/ProfileService.cs
+index fa42097..d2f8e9f 100644
+--- a/UniMobileProject/src/Services/PageServices/Profile/ProfileService.cs
++++ b/UniMobileProject/src/Services/PageServices/Profile/ProfileService.cs
+@@ -4,6 +4,7 @@ using System.Linq;
+ using System.Text;
+ using System.Threading.Tasks;
+ using UniMobileProject.src.Models.ServiceModels;
++using UniMobileProject.src.Models.ServiceModels.AuthModels;
+ using UniMobileProject.src.Models.ServiceModels.ProfileModels;
+ using UniMobileProject.src.Services.Database;
+ using UniMobileProject.src.Services.Database.Models;
+@@ -46,5 +47,53 @@ namespace UniMobileProject.src.Services.PageServices.Profile
+             }
+             return serializedResponse;
+         }
++        public async Task<RequestResponse> EnableMfa(EnableMfaModel model)
++        {
++            string json = _serializer.Serialize<EnableMfaModel>(model);
++            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
++
++            try
++            {
++                var response = await _httpClient.PostAsync("mfa/enable", httpContent);
++
++                if (response == null)
++                {
++                    Console.WriteLine("Error: No response from the server.");
++                    throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
++                }
++
++                string responseContent = await response.Content.ReadAsStringAsync();
++                if (response.IsSuccessStatusCode)
++                {
++                    Console.WriteLine("MFA enabled successfully: " + responseContent);
++                    return await _serializer.Deserialize<RequestResponse>(responseContent);
++                }
++                else
++                {
++                    Console.WriteLine("Failed to enable MFA: " + responseContent);
++                    // Логируем ответ для лучшего анализа ошибки
++                    Console.WriteLine($"Error: {response.StatusCode}, Response: {responseContent}");
++                    return await _serializer.Deserialize<FailedAuth>(responseContent);
++                }
++            }
++            catch (Exception ex)
++            {
++                Console.WriteLine("An error occurred: " + ex.Message);
++                throw;
++            }
++        }
++
++        public async Task<RequestResponse> DisableMfa(DisableMfaModel model)
++        {
++            string json = _serializer.Serialize<DisableMfaModel>(model);
++            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
++
++            var response = await _httpClient.PostAsync("/mfa/disable", httpContent) ??
++                throw new ArgumentNullException("Response from the server was not received. Internal server error happened");
++
++            return response.IsSuccessStatusCode
++                ? await _serializer.Deserialize<RequestResponse>(await response.Content.ReadAsStringAsync())
++                : throw new InvalidOperationException("Failed to disable MFA.");
++        }
+     }
+ }
+diff --git a/UniMobileProject/src/Services/Serialization/ProfileSerializer.cs b/UniMobileProject/src/Services/Serialization/ProfileSerializer.cs
+index 9aff1e9..0702a50 100644
+--- a/UniMobileProject/src/Services/Serialization/ProfileSerializer.cs
++++ b/UniMobileProject/src/Services/Serialization/ProfileSerializer.cs
+@@ -34,7 +34,7 @@ namespace UniMobileProject.src.Services.Serialization
+ 
+         public string Serialize<T>(T model)
+         {
+-            throw new NotImplementedException();
++            return JsonSerializer.Serialize(model);
+         }
+     }
+ }
+diff --git a/UniMobileProject/src/Views/UserProfilePage.xaml b/UniMobileProject/src/Views/UserProfilePage.xaml
+index 4627122..0721671 100644
+--- a/UniMobileProject/src/Views/UserProfilePage.xaml
++++ b/UniMobileProject/src/Views/UserProfilePage.xaml
+@@ -2,11 +2,23 @@
+ <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              x:Class="UniMobileProject.src.Views.UserProfilePage"
+-             Title="UserProfilePage">
+-    <VerticalStackLayout>
+-        <Label 
+-            Text="User Profile"
+-            VerticalOptions="Center" 
+-            HorizontalOptions="Center" />
++             Title="User Profile">
++    <VerticalStackLayout Padding="20">
++        <Label Text="MFA Setup" VerticalOptions="Center" HorizontalOptions="Center" />
++
++        <!-- Кнопка для генерации MFA-кода -->
++        <Button Text="Generate MFA Code" Clicked="OnGenerateMfaCodeClicked" />
++
++        <!-- QR-код -->
++        <Image x:Name="QrCodeImage" HeightRequest="200" WidthRequest="200" />
++
++        <!-- Ввод 6-значного кода -->
++        <Entry x:Name="MfaCodeEntry" Placeholder="Enter 6-digit code" Keyboard="Numeric" />
++
++        <!-- Кнопка активации MFA -->
++        <Button x:Name="ToggleMfaButton" Text="Enable MFA" Clicked="OnEnableMfaClicked" />
++
++        <!-- Сообщение об ошибке -->
++        <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
+     </VerticalStackLayout>
+-</ContentPage>
+\ No newline at end of file
++</ContentPage>
+diff --git a/UniMobileProject/src/Views/UserProfilePage.xaml.cs b/UniMobileProject/src/Views/UserProfilePage.xaml.cs
+index 5402e43..d1d048c 100644
+--- a/UniMobileProject/src/Views/UserProfilePage.xaml.cs
++++ b/UniMobileProject/src/Views/UserProfilePage.xaml.cs
+@@ -1,67 +1,187 @@
+-using System.Xml;
++using System;
++using System.Threading.Tasks;
+ using UniMobileProject.src.Models.ServiceModels;
+-using UniMobileProject.src.Models.ServiceModels.ProfileModels;
++using UniMobileProject.src.Models.ServiceModels.AuthModels;
+ using UniMobileProject.src.Services.Http;
+ using UniMobileProject.src.Services.PageServices.Profile;
+ using UniMobileProject.src.Services.Serialization;
++using UniMobileProject.src.Services.Auth;
++using System.Security.Cryptography;
++using QRCoder;
++using UniMobileProject.src.Models.ServiceModels.ProfileModels;
+ 
+-namespace UniMobileProject.src.Views;
+-
+-public partial class UserProfilePage : ContentPage
++namespace UniMobileProject.src.Views
+ {
+-    private readonly ProfileService _profileService;
+-
+-    public UserProfilePage()
++    public partial class UserProfilePage : ContentPage
+     {
+-        InitializeComponent();
++        private readonly ProfileService _profileService;
++        private readonly BasicAuthService _authService;
++        private bool _isMfaEnabled;
++        private string _secretKey;
+ 
+-        // ��������� ������ (�� �������� �� DI-����������, ���� �)
+-        var httpServiceFactory = new HttpServiceFactory();
+-        var serializationFactory = new SerializationFactory();
++        public UserProfilePage()
++        {
++            InitializeComponent();
+ 
+-        _profileService = new ProfileService(httpServiceFactory, serializationFactory);
++            var httpServiceFactory = new HttpServiceFactory();
++            var serializationFactory = new SerializationFactory();
+ 
+-        // ����������� ������� ��� ������� �������
+-        //Task.Run(async () => await LoadProfileAsync());
+-    }
++            _profileService = new ProfileService(httpServiceFactory, serializationFactory);
++            _authService = new BasicAuthService(httpServiceFactory, serializationFactory);
++
++            // Set MFA status
++            _isMfaEnabled = false;
++            UpdateMfaButtonText();
++        }
++
++        private void UpdateMfaButtonText()
++        {
++            ToggleMfaButton.Text = _isMfaEnabled ? "Disable MFA" : "Enable MFA";
++        }
++
++        private async void OnGenerateMfaCodeClicked(object sender, EventArgs e)
++        {
++            try
++            {
++                string userPassword = await PromptUserForPassword();
++
++                _secretKey = GenerateSecretKey();
++
++                string email = await GetUserEmail();
++
++                await ShowMfaSetup(_secretKey, email);
++
++            }
++            catch (Exception ex)
++            {
++                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
++            }
++        }
++
++        private async void OnEnableMfaClicked(object sender, EventArgs e)
++        {
++            try
++            {
++                string mfaCode = MfaCodeEntry.Text;
++
++                if (string.IsNullOrEmpty(mfaCode))
++                {
++                    await DisplayAlert("Error", "Please enter the 6-digit code from your authenticator app.", "OK");
++                    return;
++                }
+ 
+-    //private async Task LoadProfileAsync()
+-    //{
+-    //    try
+-    //    {
+-    //        var response = await _profileService.GetProfileModel();
+-    //        if (response == null)
+-    //        {
+-    //            // Token expired
+-    //            ShowError("Your session has expired. Please log in again.");
+-    //            return;
+-    //        }
+-
+-    //        if (response.Data is ProfileModel profile)
+-    //        {
+-    //            NameLabel.Text = $"Name: {profile.Name}";
+-    //            EmailLabel.Text = $"Email: {profile.Email}";
+-    //            ErrorMessage.IsVisible = false;
+-    //        }
+-    //        else if (response.Data is ErrorResponse error)
+-    //        {
+-    //            ShowError(error.Message);
+-    //        }
+-    //    }
+-    //    catch (Exception ex)
+-    //    {
+-    //        ShowError("An unexpected error occurred.");
+-    //    }
+-    //}
+-
+-    //private void ShowError(string message)
+-    //{
+-    //    ErrorMessage.Text = message;
+-    //    ErrorMessage.IsVisible = true;
+-    //}
+-
+-    //private async void OnRefreshProfileClicked(object sender, EventArgs e)
+-    //{
+-    //    await LoadProfileAsync();
+-    //}
++                string userPassword = await PromptUserForPassword();
++                if (!ValidateMfaData(userPassword, _secretKey, mfaCode))
++                {
++                    return;
++                }
++
++                var enableMfaModel = new EnableMfaModel(userPassword, _secretKey, mfaCode);
++                var response = await _profileService.EnableMfa(enableMfaModel);
++
++                if (response is SuccessfulAuth)
++                {
++                    _isMfaEnabled = true;
++                    UpdateMfaButtonText();
++                    await DisplayAlert("Success", "MFA has been enabled.", "OK");
++                }
++                else
++                {
++                    string errors = string.Join('\n', ((FailedAuth)response).Errors);
++                    await DisplayAlert("Error", errors, "OK");
++                }
++            }
++            catch (Exception ex)
++            {
++                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
++            }
++        }
++
++        private async Task<string> PromptUserForPassword()
++        {
++            string password = await DisplayPromptAsync("Password Required", "Please enter your password:", "OK", "Cancel", "Password", maxLength: 100, keyboard: Keyboard.Text);
++            if (string.IsNullOrEmpty(password))
++            {
++                throw new InvalidOperationException("Password is required to enable/disable MFA.");
++            }
++            return password;
++        }
++        private bool ValidateMfaData(string password, string key, string code)
++        {
++            if (string.IsNullOrEmpty(password))
++            {
++                DisplayAlert("Error", "Password cannot be empty.", "OK");
++                return false;
++            }
++
++            if (string.IsNullOrEmpty(key) || !System.Text.RegularExpressions.Regex.IsMatch(key, @"^[A-Z0-9]{16}$"))
++            {
++                DisplayAlert("Error", "Key must be exactly 16 characters long, containing only uppercase letters and digits.", "OK");
++                return false;
++            }
++
++            if (string.IsNullOrEmpty(code) || !System.Text.RegularExpressions.Regex.IsMatch(code, @"^\d{6}$"))
++            {
++                DisplayAlert("Error", "Code must be exactly 6 digits.", "OK");
++                return false;
++            }
++
++            return true;
++        }
++
++        private string GenerateSecretKey()
++        {
++            return new string('A', 16);
++        }
++
++
++        private Stream GenerateQrCode(string content)
++        {
++            var qrGenerator = new QRCodeGenerator();
++            var qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
++            var qrCode = new PngByteQRCode(qrCodeData);
++            return new MemoryStream(qrCode.GetGraphic(20));
++        }
++
++        private async Task<string> GetUserEmail()
++        {
++            try
++            {
++                var profileResponse = await _profileService.GetProfileModel();
++                if (profileResponse is ProfileModel profile && !string.IsNullOrEmpty(profile.Email))
++                {
++                    return profile.Email;
++                }
++                else
++                {
++                    await DisplayAlert("Error", "Email is missing in profile data. Please try again.", "OK");
++                    throw new InvalidOperationException("Email is missing in profile data.");
++                }
++            }
++            catch (Exception ex)
++            {
++                await DisplayAlert("Error", $"An error occurred while retrieving user email: {ex.Message}", "OK");
++                return string.Empty;
++            }
++        }
++
++        private async Task ShowMfaSetup(string secretKey, string email)
++        {
++            try
++            {
++                string otpauthUrl = $"otpauth://totp/{email}?secret={secretKey}&issuer=HHB";
++
++                var qrCodeStream = GenerateQrCode(otpauthUrl);
++                var qrCodeImage = ImageSource.FromStream(() => qrCodeStream);
++
++                QrCodeImage.Source = qrCodeImage;
++                await DisplayAlert("MFA Setup", $"Scan this QR Code with your authenticator app:\n\nKey: {secretKey}", "OK");
++            }
++            catch (Exception ex)
++            {
++                await DisplayAlert("Error", $"An error occurred while setting up MFA: {ex.Message}", "OK");
++                throw;
++            }
++        }
++    }
+ }
+\ No newline at end of file
