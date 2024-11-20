@@ -7,7 +7,7 @@
 
         public HttpService(string endpoint)
         {
-            baseAddress = new Uri($"https://ticketer.ruslan.page/{endpoint}/");
+            baseAddress = new Uri($"https://hhb-testing.ruslan.page/{endpoint}/");
 
             _client = new HttpClient()
             {

@@ -2,11 +2,109 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.UserProfilePage"
-             Title="UserProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="User Profile"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="User Profile">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="30">
+
+            <!-- Profile Info Block -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Grid>
+                        <Label x:Name="ProfileMode" Text="Profile Info" FontSize="Title" TextColor="#0e3f88" FontAttributes="Bold" VerticalOptions="Center" />
+                        <ImageButton x:Name="EditButton" Source="edit_data_icon.png" HeightRequest="30" WidthRequest="30" 
+                                     BackgroundColor="#0e3f88" VerticalOptions="Center" HorizontalOptions="End" 
+                                     Clicked="OnEditButtonClicked" IsVisible="True"/>
+                    </Grid>
+
+                    <!-- Display Mode -->
+                    <VerticalStackLayout x:Name="DisplayMode" IsVisible="True" Spacing="10">
+                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto" ColumnSpacing="10" RowSpacing="20">
+                            <!-- First Name -->
+                            <Label Text="First Name:" Grid.Row="0" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Label x:Name="FirstNameLabel" Text="FirstName: " FontSize="Medium" Grid.Row="0" Grid.Column="1" />
+
+                            <!-- Last Name -->
+                            <Label Text="Last Name:" Grid.Row="1" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Label x:Name="LastNameLabel" Text="LastName: " FontSize="Medium" Grid.Row="1" Grid.Column="1" />
+
+                            <!-- Phone Number -->
+                            <Label Text="Phone:" Grid.Row="2" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Label x:Name="PhoneLabel" Text="Phone number: " FontSize="Medium" Grid.Row="2" Grid.Column="1" />
+
+                            <!-- Email -->
+                            <Label Text="Email:" Grid.Row="3" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Label x:Name="EmailLabel" Text="Email: " FontSize="Medium" Grid.Row="3" Grid.Column="1" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Edit Mode -->
+                    <VerticalStackLayout x:Name="EditMode" IsVisible="False" Spacing="20">
+                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto" ColumnSpacing="10" RowSpacing="10">
+                            <!-- First Name -->
+                            <Label Text="First Name:" Grid.Row="0" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Entry x:Name="FirstNameEntry" Placeholder="Enter first name" FontSize="Medium" Grid.Row="0" Grid.Column="1" />
+
+                            <!-- Last Name -->
+                            <Label Text="Last Name:" Grid.Row="1" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Entry x:Name="LastNameEntry" Placeholder="Enter last name" FontSize="Medium" Grid.Row="1" Grid.Column="1" />
+
+                            <!-- Phone Number -->
+                            <Label Text="Phone:" Grid.Row="2" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Entry x:Name="PhoneNumberEntry" Placeholder="Enter phone number" Keyboard="Telephone" FontSize="Medium" Grid.Row="2" Grid.Column="1" />
+
+                            <!-- Email -->
+                            <Label Text="Email:" Grid.Row="3" Grid.Column="0" FontSize="Medium" VerticalOptions="Center" />
+                            <Entry x:Name="EmailLabelEntry" Placeholder="Email" IsReadOnly="True" TextColor="Gray" FontSize="Medium" Grid.Row="3" Grid.Column="1" />
+                        </Grid>
+
+                        <!-- Save Button -->
+                        <Button Text="Save Changes" 
+                                Clicked="OnSaveChangesClicked" 
+                                BackgroundColor="#0e3f88"
+                                FontAttributes="Bold"
+                                CornerRadius="20"/>
+                    </VerticalStackLayout>
+
+
+                    <Label x:Name="ProfileErrorMessage" Text="" TextColor="Red" IsVisible="False" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- MFA Setup Block -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="MFA Setup" FontSize="Title" TextColor="#0e3f88" />
+                    <Button Text="Generate MFA Code" 
+                            Clicked="OnGenerateMfaCodeClicked" 
+                            BackgroundColor="#ffffff"
+                            TextColor="#0e3f88"
+                            FontAttributes="Bold"
+                            BorderColor="#0e3f88"
+                            BorderWidth="2"
+                            CornerRadius="20" />
+                    <Image x:Name="QrCodeImage" HeightRequest="200" WidthRequest="200" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Enable/Disable MFA Block -->
+            <Frame BorderColor="LightGray" CornerRadius="10" Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Enable/Disable MFA" FontSize="Title" TextColor="#0e3f88" />
+                    <Entry x:Name="MfaCodeEntry" Placeholder="Enter 6-digit code" Keyboard="Numeric" />
+                    <Button x:Name="ToggleMfaButton" 
+                            Text="Enable MFA" 
+                            Clicked="OnToggleMfaClicked" 
+                            BackgroundColor="#ffffff"
+                            TextColor="#0e3f88"
+                            FontAttributes="Bold"
+                            BorderColor="#0e3f88"
+                            BorderWidth="2"
+                            CornerRadius="20" />
+                    <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
+
