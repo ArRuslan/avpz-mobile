@@ -2,11 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.MainPage"
-             Title="MainPage">
+             Title="MainPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+    
     <VerticalStackLayout>
+        
         <Label 
             Text="Main Page"
             VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center"
+            TextColor="{DynamicResource QuaternaryColor}"/>
+        
     </VerticalStackLayout>
 </ContentPage>

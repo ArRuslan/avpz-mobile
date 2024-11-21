@@ -2,25 +2,40 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.MfaPage"
-             Title="MFA Verification">
-    <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center" HorizontalOptions="Center">
-        <Label 
-            Text="Enter the 6-digit MFA code"
-            FontSize="24"
-            HorizontalOptions="Center" />
+             Title="MFA Verification"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-        <Entry
-            x:Name="MfaCodeEntry"
-            Placeholder="6-digit code"
-            Keyboard="Numeric"
-            MaxLength="6"
-            FontSize="20"
-            HorizontalOptions="FillAndExpand" />
+    <Frame Margin="20" 
+           Padding="20" 
+           CornerRadius="15" 
+           HasShadow="True" 
+           BackgroundColor="{DynamicResource TertiaryColor}" 
+           VerticalOptions="Center">
 
-        <Button
-            Text="Submit"
-            FontSize="20"
-            Clicked="OnSubmitClicked"
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+        <StackLayout Spacing="20">
+            
+            <Label Text="Enter the 6-digit MFA code" 
+                   FontSize="22" 
+                   HorizontalOptions="Center" 
+                   TextColor="{DynamicResource PrimaryTextColor}"/>
+
+            <Entry x:Name="MfaCodeEntry"
+                   Placeholder="6-digit code"
+                   Keyboard="Numeric"
+                   MaxLength="6"
+                   FontSize="18"
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+
+            <Button Text="Submit"
+                    FontSize="20"
+                    Clicked="OnSubmitClicked"
+                    CornerRadius="20"
+                    HeightRequest="50"
+                    HorizontalOptions="FillAndExpand"
+                    BackgroundColor="{DynamicResource PrimaryColor}" 
+                    TextColor="{DynamicResource SecondaryTextColor}" />
+
+        </StackLayout>
+    </Frame>
 </ContentPage>

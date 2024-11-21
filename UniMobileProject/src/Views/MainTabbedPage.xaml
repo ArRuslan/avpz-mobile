@@ -7,8 +7,8 @@
              android:TabbedPage.ToolbarPlacement="Bottom"
              Title="MainTabbedPage" 
              NavigationPage.HasNavigationBar="False" 
-             BarBackgroundColor ="#0e3f88" 
-             BackgroundColor="#FFFFFF" 
+             BarBackgroundColor ="{DynamicResource PrimaryColor}" 
+             BackgroundColor="{DynamicResource PageBackgroundColor}" 
              SelectedTabColor="#FFFFFF" 
              UnselectedTabColor ="#000000">
 

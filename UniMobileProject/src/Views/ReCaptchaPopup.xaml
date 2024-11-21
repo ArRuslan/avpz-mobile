@@ -4,21 +4,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     BackgroundColor="#aa000000"
     x:Class="UniMobileProject.src.Views.ReCaptchaPopup">
+    
     <Frame
         VerticalOptions="Center"
         HorizontalOptions="Center"
         WidthRequest="310"
-        BackgroundColor="White"
+        BackgroundColor="{DynamicResource PageBackgroundColor}"
         CornerRadius="20"
         Padding="0"
         HasShadow="True"
         Margin="30">
 
-        <StackLayout Spacing="15" >
-            <Label Text="Please complete the reCAPTCHA" FontSize="18" Padding="15" HorizontalOptions="Center" TextColor="#0e3f88" />
+        <StackLayout Spacing="15">
+
+            <Label Text="Please complete the reCAPTCHA" 
+                   FontSize="18" 
+                   Padding="15" 
+                   HorizontalOptions="Center" 
+                   TextColor="{DynamicResource PrimaryTextColor}" />
 
             <!-- WebView for reCAPTCHA -->
-            <WebView x:Name="CaptchaWebView" WidthRequest="400" HeightRequest="500" HorizontalOptions="Center"/>
+            <WebView x:Name="CaptchaWebView" 
+                     WidthRequest="400" 
+                     HeightRequest="500" 
+                     HorizontalOptions="Center"
+                     BackgroundColor="{DynamicResource PageBackgroundColor}"/>
 
         </StackLayout>
     </Frame>

@@ -3,50 +3,76 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.LoginPage"
              Title="Login"
-             BackgroundColor="White">
-    
-    <Frame Margin="20" Padding="10" CornerRadius="15" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
-        <StackLayout Spacing="20">
-            <Label Text="Login" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-            <Entry x:Name="UsernameEntry" Placeholder="Username" Keyboard="Email" TextColor="#000000" PlaceholderColor="#9f9f9f" />
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" TextColor="#000000" PlaceholderColor="#9f9f9f" />
+    <Frame Margin="20" 
+           Padding="10" 
+           CornerRadius="15" 
+           HasShadow="True" 
+           BackgroundColor="{DynamicResource TertiaryColor}" 
+           VerticalOptions="Center">
+        
+        <StackLayout Spacing="20">
+            
+            <Label Text="Login" 
+                   FontSize="32" 
+                   HorizontalOptions="Center" 
+                   TextColor="{DynamicResource PrimaryTextColor}" />
+
+            <Entry x:Name="UsernameEntry" 
+                   Placeholder="Username" 
+                   Keyboard="Email" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+            
+            <Entry x:Name="PasswordEntry" 
+                   Placeholder="Password" 
+                   IsPassword="True" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
 
             <Button Text="Login"
                     Clicked="OnLoginButtonClicked"
-                    BackgroundColor="#0e3f88"
-                    TextColor="White"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="{DynamicResource SecondaryTextColor}"
                     CornerRadius="20"
                     HeightRequest="50"
                     HorizontalOptions="FillAndExpand" />
 
             <Button Text="Register"
                     Clicked="OnNavigateToRegister"
-                    BackgroundColor="#ffffff"
-                    TextColor="#0e3f88"
-                    BorderColor="#0e3f88"
+                    BackgroundColor="{DynamicResource SecondaryColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}"
+                    BorderColor="{DynamicResource PrimaryColor}"
                     BorderWidth="1"
                     CornerRadius="20"
                     HeightRequest="50"
                     HorizontalOptions="FillAndExpand" />
+            
             <Button Text="Forgot Password?"
                     Clicked="OnForgotPasswordClicked"
-                    BackgroundColor="Transparent"
-                    TextColor="#0e3f88"
+                    BackgroundColor="{DynamicResource TransparentColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}"
                     FontAttributes="Italic"
                     HorizontalOptions="Center" />
 
-
-            <Entry x:Name="ForgotPasswordEmailEntry" Placeholder="Enter your email" IsVisible="False" Keyboard="Email" />
+            <Entry x:Name="ForgotPasswordEmailEntry" 
+                   Placeholder="Enter your email" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}"
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   IsVisible="False" 
+                   Keyboard="Email" />
+            
             <Button x:Name="ForgotPasswordSubmitButton"
                     Text="Submit"
                     Clicked="OnForgotPasswordSubmitClicked"
-                    BackgroundColor="#0e3f88"
-                    TextColor="White"
+                    BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="{DynamicResource SecondaryTextColor}"
                     CornerRadius="20"
                     HeightRequest="50"
                     HorizontalOptions="FillAndExpand"
                     IsVisible="False" />
+            
         </StackLayout>
     </Frame>
 </ContentPage>
