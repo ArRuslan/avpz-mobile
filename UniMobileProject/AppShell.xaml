@@ -15,6 +15,18 @@
         Title="Register" 
         ContentTemplate="{DataTemplate local:RegisterPage}"
         Route="register" />
+    <ShellContent 
+        Title="My Profile" 
+        ContentTemplate="{DataTemplate local:UserProfilePage}"
+        Route="myprofile" />
+    <ShellContent 
+        Title="Main" 
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="main" />
+    <ShellContent 
+        Title="Bookings" 
+        ContentTemplate="{DataTemplate local:UserBookingsPage}"
+        Route="mybookings" />
 
 
 </Shell>

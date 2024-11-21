@@ -20,6 +20,15 @@ namespace UniMobileProject.src.Services.ReCaptcha
                             window.location.href = '{baseUrl}/?token=' + token;
                         }}
                     </script>
+                    <style>
+                            form {{
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                margin: 0; /* Видаляє зовнішні відступи */
+                            }}
+                    </style>
                 </head>
                 <body>
                     <form action='?' method='POST'>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels;
+using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Database.Models;
@@ -45,6 +46,62 @@ namespace UniMobileProject.src.Services.PageServices.Profile
             return serializedResponse;
         }
 
+        public async Task<RequestResponse> EnableMfa(EnableMfaModel model)
+        {
+            string json = _serializer.Serialize(model);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("mfa/enable", httpContent);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                RequestResponse result;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await _serializer.Deserialize<ProfileModel>(responseContent);
+                }
+                else
+                {
+                    result = await _serializer.Deserialize<ErrorResponse>(responseContent);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during EnableMfa: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<RequestResponse> DisableMfa(DisableMfaModel model)
+        {
+            string json = _serializer.Serialize(model);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.PostAsync("mfa/disable", httpContent);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                RequestResponse result;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await _serializer.Deserialize<ProfileModel>(responseContent);
+                }
+                else
+                {
+                    result = await _serializer.Deserialize<ErrorResponse>(responseContent);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred during DisableMfa: {ex.Message}");
+                throw;
+            }
+        }
+        
         public async Task<RequestResponse?> UpdateProfile(EditProfileModel model)
         {
             if (!await AddTokenToHeader())

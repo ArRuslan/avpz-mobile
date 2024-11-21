@@ -3,29 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.RegisterPage"
              Title="Register"
-             BackgroundColor="White">
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
     
-    <Frame Margin="20" Padding="10" CornerRadius="10" HasShadow="True" BackgroundColor="#f2f2f2" VerticalOptions="Center">
+    <Frame Margin="20" 
+           Padding="10" 
+           CornerRadius="10" 
+           HasShadow="True" 
+           BackgroundColor="{DynamicResource TertiaryColor}" 
+           VerticalOptions="Center">
+        
         <StackLayout Spacing="15">
-            <Label Text="Register" FontSize="32" HorizontalOptions="Center" TextColor="#0e3f88" />
-
-            <Entry x:Name="FirstNameEntry" Placeholder="First Name" />
-            <Entry x:Name="LastNameEntry" Placeholder="Last Name" />
-            <Entry x:Name="UsernameEntry" Placeholder="Email" Keyboard="Email" />
-            <Entry x:Name="PhoneNumberEntry" Placeholder="Phone Number" Keyboard="Telephone" />
-
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
-            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirm Password" IsPassword="True" />
             
-            <WebView x:Name="CaptchaWebView"/>
+            <Label Text="Register" 
+                   FontSize="32" 
+                   HorizontalOptions="Center" 
+                   TextColor="{DynamicResource PrimaryTextColor}" />
+
+            <Entry x:Name="FirstNameEntry" 
+                   Placeholder="First Name" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+            
+            <Entry x:Name="LastNameEntry" 
+                   Placeholder="Last Name" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+            
+            <Entry x:Name="UsernameEntry" 
+                   Placeholder="Email" 
+                   Keyboard="Email" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+            
+            <Entry x:Name="PhoneNumberEntry" 
+                   Placeholder="Phone Number" 
+                   Keyboard="Telephone" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+
+            <Entry x:Name="PasswordEntry" 
+                   Placeholder="Password" 
+                   IsPassword="True" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
+            
+            <Entry x:Name="ConfirmPasswordEntry" 
+                   Placeholder="Confirm Password" 
+                   IsPassword="True" 
+                   TextColor="{DynamicResource TertiaryTextColor}" 
+                   PlaceholderColor="{DynamicResource QuaternaryTextColor}" />
 
             <Button Text="Register" 
                     Clicked="OnRegisterButtonClicked" 
-                    BackgroundColor="#0e3f88" 
-                    TextColor="White"
+                    BackgroundColor="{DynamicResource PrimaryColor}" 
+                    TextColor="{DynamicResource SecondaryTextColor}"
                     CornerRadius="20" 
                     HeightRequest="50"
                     HorizontalOptions="FillAndExpand" />
+            
         </StackLayout>
     </Frame>
 </ContentPage>

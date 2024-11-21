@@ -1,3 +1,4 @@
+using Microsoft.Maui.ApplicationModel.Communication;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.ReCaptcha;
@@ -18,14 +19,6 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
-
-            CaptchaWebView.Source = new HtmlWebViewSource
-            {
-                BaseUrl = ReCaptchaService.baseUrl,
-                Html = ReCaptchaService.captchaHtml
-            };
-
-            CaptchaWebView.Navigated += OnCaptchaNavigated;
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -33,7 +26,6 @@ namespace UniMobileProject.src.Views
             var email = UsernameEntry.Text;
             var password = PasswordEntry.Text;
 
-            // Валідація електронної пошти та пароля
             string? validationError = ValidateLoginInputs(email, password);
             if (validationError != null)
             {
@@ -41,19 +33,35 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
+            var captchaPopup = new ReCaptchaPopup();
+            await Navigation.PushModalAsync(captchaPopup);
+
+            // Очікуємо завершення попапу
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+
+            await LoginUser(email, password);
+        }
+
+        private async Task LoginUser(string email, string password)
+        {
             if (string.IsNullOrEmpty(_captchaToken))
             {
-                await DisplayAlert("Error", "Please complete the reCAPTCHA.", "OK");
+                await DisplayAlert("Error", "Failed to verify reCAPTCHA.", "OK");
                 return;
             }
 
-            // Якщо валідація успішна, виконуємо аутентифікацію
-            var model = new LoginModel(email: email, password: password);
+            var model = new LoginModel(email, password);
             var response = await _authService.Login(model);
 
-            if (response is SuccessfulAuth)
+            if (response is SuccessfulAuth successfulAuthResponse)
             {
-                SuccessfulAuth successfulAuthResponse = (SuccessfulAuth)response;
+                if (successfulAuthResponse is MfaRequiredAuth mfaRequiredAuth)
+                {
+                    await Navigation.PushAsync(new MfaPage(_authService, mfaRequiredAuth.MfaToken));
+                    return; 
+                }
+
+
                 bool success = await _tokenMaintainer.SetToken(successfulAuthResponse);
                 if (!success)
                 {
@@ -61,7 +69,7 @@ namespace UniMobileProject.src.Views
                 }
                 else
                 {
-                    await DisplayAlert("Success", "Logged in successfully!", "OK");
+                    Application.Current.MainPage = new MainTabbedPage();
                 }
             }
             else if (response is FailedAuth failedResponse)
@@ -75,23 +83,6 @@ namespace UniMobileProject.src.Views
         {
             _captchaToken = String.Empty;
             await Navigation.PushAsync(new RegisterPage(_authService, _validationService));
-            CaptchaWebView.IsVisible = true;
-            CaptchaWebView.Source = new HtmlWebViewSource
-            {
-                BaseUrl = ReCaptchaService.baseUrl,
-                Html = ReCaptchaService.captchaHtml
-            };
-        }
-
-        private async void OnCaptchaNavigated(object sender, WebNavigatedEventArgs e)
-        {
-            _captchaToken = await ReCaptchaService.HandleCaptchaNavigation(e);
-
-            if (!string.IsNullOrEmpty(_captchaToken))
-            {
-                CaptchaWebView.IsVisible = false;
-                await DisplayAlert("Success", "reCAPTCHA verified!", "OK");
-            }
         }
 
         private string? ValidateLoginInputs(string email, string password)

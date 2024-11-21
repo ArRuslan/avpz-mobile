@@ -73,7 +73,7 @@ VALUES(@tokenString, @timeSpan);";
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = @"SELECT * FROM Tokens";
+        command.CommandText = @"SELECT * FROM Tokens ORDER BY Id DESC LIMIT 1";
         try
         {
             using var reader = await command.ExecuteReaderAsync();
