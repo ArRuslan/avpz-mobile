@@ -70,7 +70,8 @@ namespace UniMobileProject.src.Views
                 }
                 else
                 {
-                    Application.Current.MainPage = new MainTabbedPage();
+                    Application.Current.MainPage = new NavigationPage(new MainTabbedPage());
+
                 }
             }
             else if (response is FailedAuth failedResponse)

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using UniMobileProject.src.Models.ServiceModels.HotelModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Hotels;
@@ -10,16 +11,22 @@ namespace UniMobileProject.src.Views
     {
         private HotelService _hotelService;
         public ObservableCollection<HotelModel> Hotels { get; set; }
+        public ICommand NavigateToRoomsCommand { get; private set; }
 
         public MainPage()
         {
             InitializeComponent();
+
             _hotelService = new HotelService(
                 new HttpServiceFactory(),
                 new SerializationFactory()
             );
+
             Hotels = new ObservableCollection<HotelModel>();
             BindingContext = this;
+
+            // Инициализация команды для навигации
+            NavigateToRoomsCommand = new Command<HotelModel>(async (hotel) => await NavigateToRooms(hotel));
         }
 
         protected override async void OnAppearing()
@@ -50,20 +57,36 @@ namespace UniMobileProject.src.Views
 
         private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            // Получаем текст из всех строк поиска
             string name = NameSearchBar.Text ?? string.Empty;
             string address = AddressSearchBar.Text ?? string.Empty;
             string description = DescriptionSearchBar.Text ?? string.Empty;
 
-            // Если все строки поиска пусты, загружаем все отели
             if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(address) && string.IsNullOrWhiteSpace(description))
             {
                 await LoadHotels();
                 return;
             }
 
-            // Выполняем поиск с текущими значениями
             await LoadHotels(name, address, description);
+        }
+
+        private async void OnHotelTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (e.Item is HotelModel selectedHotel)
+            {
+                await NavigateToRooms(selectedHotel);
+
+                // Сбрасываем выбранный элемент
+                ((ListView)sender).SelectedItem = null;
+            }
+        }
+
+        private async Task NavigateToRooms(HotelModel hotel)
+        {
+            if (hotel != null)
+            {
+                await Navigation.PushAsync(new RoomsPage(hotel.Id));
+            }
         }
     }
 }
