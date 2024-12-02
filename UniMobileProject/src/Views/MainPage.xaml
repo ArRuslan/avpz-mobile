@@ -2,16 +2,33 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.MainPage"
-             Title="MainPage"
+             Title="Hotels"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
-    
+
     <VerticalStackLayout>
-        
+        <!-- Title -->
         <Label 
-            Text="Main Page"
-            VerticalOptions="Center" 
+            Text="Hotels List"
+            FontSize="24"
+            FontAttributes="Bold"
             HorizontalOptions="Center"
-            TextColor="{DynamicResource QuaternaryColor}"/>
-        
+            VerticalOptions="Start"
+            TextColor="{DynamicResource QuaternaryColor}"
+            Margin="0,10,0,10" />
+
+        <!-- CollectionView for Hotels -->
+        <CollectionView ItemsSource="{Binding Hotels}" VerticalOptions="FillAndExpand">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5" CornerRadius="8" BorderColor="Gray">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" TextColor="Black" />
+                            <Label Text="{Binding Address}" FontSize="14" TextColor="DarkGray" />
+                            <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </VerticalStackLayout>
 </ContentPage>
