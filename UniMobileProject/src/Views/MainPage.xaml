@@ -16,6 +16,22 @@
             TextColor="{DynamicResource QuaternaryColor}"
             Margin="0,10,0,10" />
 
+        <!-- Search Bars -->
+        <SearchBar 
+            Placeholder="Search by name"
+            TextChanged="OnSearchTextChanged"
+            x:Name="NameSearchBar" />
+
+        <SearchBar 
+            Placeholder="Search by address"
+            TextChanged="OnSearchTextChanged"
+            x:Name="AddressSearchBar" />
+
+        <SearchBar 
+            Placeholder="Search by description"
+            TextChanged="OnSearchTextChanged"
+            x:Name="DescriptionSearchBar" />
+
         <!-- CollectionView for Hotels -->
         <CollectionView ItemsSource="{Binding Hotels}" VerticalOptions="FillAndExpand">
             <CollectionView.ItemTemplate>

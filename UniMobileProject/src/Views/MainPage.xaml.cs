@@ -15,8 +15,8 @@ namespace UniMobileProject.src.Views
         {
             InitializeComponent();
             _hotelService = new HotelService(
-                new HttpServiceFactory(),  
-                new SerializationFactory() 
+                new HttpServiceFactory(),
+                new SerializationFactory()
             );
             Hotels = new ObservableCollection<HotelModel>();
             BindingContext = this;
@@ -25,10 +25,14 @@ namespace UniMobileProject.src.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            await LoadHotels();
+        }
 
+        private async Task LoadHotels(string? name = null, string? address = null, string? description = null)
+        {
             try
             {
-                var response = await _hotelService.GetHotels(page: 1, pageSize: 50);
+                var response = await _hotelService.GetHotels(page: 1, pageSize: 50, name: name, address: address, description: description);
                 if (response != null)
                 {
                     Hotels.Clear();
@@ -42,6 +46,24 @@ namespace UniMobileProject.src.Views
             {
                 Console.WriteLine($"Error fetching hotels: {ex.Message}");
             }
+        }
+
+        private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            // ѕолучаем текст из всех строк поиска
+            string name = NameSearchBar.Text ?? string.Empty;
+            string address = AddressSearchBar.Text ?? string.Empty;
+            string description = DescriptionSearchBar.Text ?? string.Empty;
+
+            // ≈сли все строки поиска пусты, загружаем все отели
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(address) && string.IsNullOrWhiteSpace(description))
+            {
+                await LoadHotels();
+                return;
+            }
+
+            // ¬ыполн€ем поиск с текущими значени€ми
+            await LoadHotels(name, address, description);
         }
     }
 }

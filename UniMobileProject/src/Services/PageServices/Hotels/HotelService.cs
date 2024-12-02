@@ -18,7 +18,7 @@ namespace UniMobileProject.src.Services.PageServices.Hotels
             _serializer = serializationFactory.Create(Enums.SerializerType.Hotel);
         }
 
-        public async Task<PaginatedResponse<HotelModel>?> GetHotels(int page = 1, int pageSize = 50, string? name = null, string? address = null, string? description = null)
+        public async Task<PaginatedResponse<HotelModel>?> GetHotels(int page = 1, int pageSize = 10, string? name = null, string? address = null, string? description = null)
         {
             string query = $"?page={page}&page_size={pageSize}";
 
@@ -28,10 +28,11 @@ namespace UniMobileProject.src.Services.PageServices.Hotels
 
             try
             {
-                string fullUrl = _httpClient.BaseAddress + query;
-                Console.WriteLine($"Final URL: {fullUrl}");
-                var response = await _httpClient.GetAsync(fullUrl);
+                string fullUrl = new Uri(new Uri(_httpClient.BaseAddress!.ToString().TrimEnd('/')), "hotels" + query).ToString();
 
+                Console.WriteLine($"Final URL: {fullUrl}");
+
+                var response = await _httpClient.GetAsync(fullUrl);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
