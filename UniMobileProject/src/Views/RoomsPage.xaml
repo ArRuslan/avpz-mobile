@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniMobileProject.src.Views.RoomsPage"
+             Title="Rooms">
+    <VerticalStackLayout Padding="10">
+        <Label Text="Rooms Available" FontSize="24" HorizontalOptions="Center" />
+
+        <SearchBar 
+            Placeholder="Search by room type"
+            TextChanged="OnSearchTextChanged"
+            x:Name="TypeSearchBar" />
+
+        <SearchBar 
+            Placeholder="Min price"
+            TextChanged="OnSearchTextChanged"
+            x:Name="MinPriceSearchBar" />
+
+        <SearchBar 
+            Placeholder="Max price"
+            TextChanged="OnSearchTextChanged"
+            x:Name="MaxPriceSearchBar" />
+
+        <ListView x:Name="RoomsListView" IsPullToRefreshEnabled="True" ItemTapped="OnRoomTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5">
+                            <Label Text="{Binding Type}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding Price, StringFormat='Price: {0:C}'}" />
+                            <Label Text="{Binding Available}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>

@@ -10,6 +10,7 @@ namespace UniMobileProject.src.Enums
     {
         Auth,
         Profile,
-        // New will be added during development
+        Hotel,
+        Room,
     }
 }

@@ -6,12 +6,20 @@ namespace UniMobileProject.src.Services.Serialization
     {
         public ISerializer Create(SerializerType type)
         {
+            if (!Enum.IsDefined(typeof(SerializerType), type))
+            {
+                throw new ArgumentException($"Invalid SerializerType provided: {type}");
+            }
+
             return type switch
             {
                 SerializerType.Auth => new AuthSerializer(),
                 SerializerType.Profile => new ProfileSerializer(),
-                _ => throw new ArgumentException($"Can't create a serializer with an unspecified type: {nameof(type)}")
+                SerializerType.Hotel => new HotelSerializer(),
+                SerializerType.Room => new RoomSerializer(),
+                _ => throw new ArgumentException($"Can't create a serializer with an unspecified type: {type}")
             };
         }
+
     }
 }
