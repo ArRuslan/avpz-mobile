@@ -15,11 +15,18 @@ namespace UniMobileProject.src.Services.Auth
         private HttpService _httpService;
         private ISerializer _serializer;
         private readonly DatabaseService _dbService;
-        public BasicAuthService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory)
+        public BasicAuthService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory, string testDb = null)
         {
             _httpService = httpServiceFactory.Create("auth");
             _serializer = serializationFactory.Create(Enums.SerializerType.Auth);
-            _dbService = new DatabaseService();
+            if (string.IsNullOrEmpty(testDb))
+            {
+                _dbService = new DatabaseService();
+            }
+            else
+            {
+                _dbService = new DatabaseService(testDb);
+            }
         }
 
         public async Task RequestMfaFlow(string mfaToken)

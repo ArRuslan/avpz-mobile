@@ -17,6 +17,7 @@ namespace UniMobileProject.src.Services.Serialization
                 SerializerType.Profile => new ProfileSerializer(),
                 SerializerType.Hotel => new HotelSerializer(),
                 SerializerType.Room => new RoomSerializer(),
+                SerializerType.Booking => new BookingSerializer(),
                 _ => throw new ArgumentException($"Can't create a serializer with an unspecified type: {type}")
             };
         }

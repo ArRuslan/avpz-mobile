@@ -12,5 +12,6 @@ namespace UniMobileProject.src.Enums
         Profile,
         Hotel,
         Room,
+        Booking
     }
 }
