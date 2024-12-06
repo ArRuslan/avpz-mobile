@@ -18,13 +18,23 @@ namespace UniMobileProject.src.Services.PageServices.Room
             _serializer = serializationFactory.Create(Enums.SerializerType.Room);
         }
 
-        public async Task<PaginatedResponse<RoomModel>?> GetRooms(int hotelId, int page = 1, int pageSize = 50, string? type = null, decimal? priceMin = null, decimal? priceMax = null)
+        public async Task<PaginatedResponse<RoomModel>?> GetRooms(
+            int hotelId,
+            int page = 1,
+            int pageSize = 50,
+            string? type = null,
+            decimal? priceMin = null,
+            decimal? priceMax = null,
+            string? checkIn = null,
+            string? checkOut = null)
         {
             string query = $"?hotel_id={hotelId}&page={page}&page_size={pageSize}";
 
             if (!string.IsNullOrEmpty(type)) query += $"&type={type}";
             if (priceMin.HasValue) query += $"&price_min={priceMin.Value}";
             if (priceMax.HasValue) query += $"&price_max={priceMax.Value}";
+            if (!string.IsNullOrEmpty(checkIn)) query += $"&check_in={checkIn}";
+            if (!string.IsNullOrEmpty(checkOut)) query += $"&check_out={checkOut}";
 
             try
             {
@@ -52,5 +62,6 @@ namespace UniMobileProject.src.Services.PageServices.Room
                 return null;
             }
         }
+
     }
 }
