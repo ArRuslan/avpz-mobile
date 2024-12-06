@@ -40,18 +40,15 @@ namespace UniMobileProject.src.Services.PageServices.Room
                 }
                 else
                 {
-                    Console.WriteLine($"Ошибка при получении данных: {response.StatusCode}");
                     return null;
                 }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Ошибка при выполнении запроса: {ex.Message}");
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
                 return null;
             }
         }

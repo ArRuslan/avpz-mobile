@@ -74,12 +74,12 @@ namespace UniMobileProject.src.Views
         {
             if (e.Item is HotelModel selectedHotel)
             {
-                await NavigateToRooms(selectedHotel);
+                await Navigation.PushAsync(new HotelDetailsPage(selectedHotel));
 
-                // —брасываем выбранный элемент
                 ((ListView)sender).SelectedItem = null;
             }
         }
+
 
         private async Task NavigateToRooms(HotelModel hotel)
         {

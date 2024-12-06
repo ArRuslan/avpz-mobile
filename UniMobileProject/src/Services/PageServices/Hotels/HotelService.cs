@@ -18,7 +18,7 @@ namespace UniMobileProject.src.Services.PageServices.Hotels
             _serializer = serializationFactory.Create(Enums.SerializerType.Hotel);
         }
 
-        public async Task<PaginatedResponse<HotelModel>?> GetHotels(int page = 1, int pageSize = 10, string? name = null, string? address = null, string? description = null)
+        public async Task<PaginatedResponse<HotelModel>?> GetHotels(int page = 1, int pageSize = 5, string? name = null, string? address = null, string? description = null)
         {
             string query = $"?page={page}&page_size={pageSize}";
 

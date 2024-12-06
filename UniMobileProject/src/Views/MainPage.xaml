@@ -32,7 +32,6 @@
             TextChanged="OnSearchTextChanged"
             x:Name="DescriptionSearchBar" />
 
-        <!-- ListView for Hotels -->
         <ListView ItemsSource="{Binding Hotels}" 
                   VerticalOptions="FillAndExpand"
                   x:Name="HotelsListView"
@@ -44,8 +43,6 @@
                         <Frame Padding="10" Margin="5" CornerRadius="8" BorderColor="Gray">
                             <VerticalStackLayout>
                                 <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" TextColor="Black" />
-                                <Label Text="{Binding Address}" FontSize="14" TextColor="DarkGray" />
-                                <Label Text="{Binding Description}" FontSize="12" TextColor="Gray" />
                                 <Button Text="View Rooms"
                                         Command="{Binding Path=BindingContext.NavigateToRoomsCommand, Source={x:Reference HotelsListView}}"
                                         CommandParameter="{Binding .}" />
