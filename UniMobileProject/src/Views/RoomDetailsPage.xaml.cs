@@ -17,7 +17,7 @@ namespace UniMobileProject.src.Views
         private void DisplayRoomDetails()
         {
             RoomTypeLabel.Text = _room.Type;
-            RoomPriceLabel.Text = $"Price: {_room.Price:C}";
+            RoomPriceLabel.Text = $"{_room.Price:C}";
             RoomAvailableLabel.Text = _room.Available ? "Available" : "Not Available";
         }
     }

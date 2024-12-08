@@ -2,25 +2,82 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.HotelDetailsPage"
-             Title="Hotel Details">
+             Title="Hotel Details"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <ScrollView>
-        <StackLayout Padding="20">
-            <Label Text="Hotel Details" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
 
-            <Label Text="Name:" FontSize="18" FontAttributes="Bold" />
-            <Label x:Name="HotelNameLabel" FontSize="16" />
+        <VerticalStackLayout Padding="20" 
+                             Spacing="30">
+            <Frame BorderColor="{DynamicResource TertiaryColor}" 
+                   BackgroundColor="{DynamicResource TertiaryColor}" 
+                   CornerRadius="10" 
+                   Padding="15">
 
-            <Label Text="Address:" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Label x:Name="HotelAddressLabel" FontSize="16" />
+                <VerticalStackLayout Spacing="10">
 
-            <Label Text="Description:" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
-            <Label x:Name="HotelDescriptionLabel" FontSize="16" />
+                    <Label Text="Hotel Details" 
+                           FontSize="Title" 
+                           TextColor="{DynamicResource PrimaryTextColor}" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Start" />
 
-            <Button Text="View Rooms" 
-                    Margin="0,20,0,0"
-                    Clicked="OnViewRoomsClicked" />
-        </StackLayout>
+                    <Grid ColumnDefinitions="Auto, *" 
+                          RowDefinitions="Auto, Auto, Auto" 
+                          ColumnSpacing="10" 
+                          RowSpacing="20">
+
+                        <Label Text="Name:" 
+                               Grid.Row="0" 
+                               Grid.Column="0" 
+                               FontSize="Medium" 
+                               VerticalOptions="Center"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="HotelNameLabel" 
+                               FontSize="Medium" 
+                               Grid.Row="0" 
+                               Grid.Column="1"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label Text="Address:" 
+                               Grid.Row="1" 
+                               Grid.Column="0" 
+                               FontSize="Medium" 
+                               VerticalOptions="Center"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="HotelAddressLabel"  
+                               FontSize="Medium" 
+                               Grid.Row="1" 
+                               Grid.Column="1"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label Text="Description:" 
+                               Grid.Row="2" 
+                               Grid.Column="0" 
+                               FontSize="Medium" 
+                               VerticalOptions="Center"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="HotelDescriptionLabel" 
+                               FontSize="Medium" 
+                               Grid.Row="2" 
+                               Grid.Column="1"
+                               TextColor="{DynamicResource TertiaryTextColor}"/>
+                    </Grid>
+
+                    <Button Text="View Rooms"
+                            Margin="0,20,0,0"
+                            Clicked="OnViewRoomsClicked"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="{DynamicResource SecondaryTextColor}"
+                            CornerRadius="20"
+                            HeightRequest="50"
+                            HorizontalOptions="FillAndExpand" />
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>
