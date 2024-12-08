@@ -18,4 +18,6 @@
 
     <Color x:Key="TransparentColor">Transparent</Color>
 
+    <x:String x:Key="FilterIconSource">filter_icon_dark.png</x:String>
+
 </ResourceDictionary>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniMobileProject.src.Views.RoomFilterPopup"
+             Title="RoomFilterPopup">
+
+    <Frame VerticalOptions="Center"
+           HorizontalOptions="Center"
+           WidthRequest="320"
+           BackgroundColor="{DynamicResource PageBackgroundColor}"
+           CornerRadius="20"
+           Padding="0"
+           HasShadow="True"
+           Margin="30">
+        <VerticalStackLayout Padding="20" Spacing="20" BackgroundColor="{DynamicResource SecondaryColor}">
+            <Label Text="Filters"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="{DynamicResource PrimaryTextColor}" />
+
+            <VerticalStackLayout>
+                <Label Text="Price Range"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                <!-- Price Filters -->
+                <HorizontalStackLayout Spacing="10">
+                    <HorizontalStackLayout>
+                        <Label Text="Minimal"
+                               FontSize="Subtitle"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+                        <Entry Placeholder="Min Price"
+                               x:Name="MinPriceSearchBar"
+                               Keyboard="Numeric"
+                               TextColor="{DynamicResource TertiaryTextColor}" 
+                               FontSize="Subtitle"
+                               PlaceholderColor="{DynamicResource QuaternaryTextColor}"
+                               BackgroundColor="{DynamicResource SecondaryColor}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <Label Text="Maximal"
+                               FontSize="Subtitle"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+                        <Entry Placeholder="Max Price"
+                               x:Name="MaxPriceSearchBar"
+                               Keyboard="Numeric"
+                               TextColor="{DynamicResource TertiaryTextColor}" 
+                               FontSize="Subtitle"
+                               PlaceholderColor="{DynamicResource QuaternaryTextColor}"
+                               BackgroundColor="{DynamicResource SecondaryColor}" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+                <Label x:Name="PriceError"
+                       FontSize="Small"
+                       TextColor="Red"/>
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout>
+                <Label Text="Check-in/out"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                <!-- Date Filters -->
+                <HorizontalStackLayout Spacing="10">
+                    <HorizontalStackLayout>
+                        <Label Text="In"
+                               FontSize="Subtitle"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+                        <DatePicker x:Name="CheckInDatePicker"
+                            Format="yyyy-MM-dd"
+                            TextColor="{DynamicResource TertiaryTextColor}"
+                            BackgroundColor="{DynamicResource SecondaryColor}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout>
+                        <Label Text="Out"
+                               FontSize="Subtitle"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+                        <DatePicker x:Name="CheckOutDatePicker"
+                            Format="yyyy-MM-dd"
+                            TextColor="{DynamicResource TertiaryTextColor}"
+                            BackgroundColor="{DynamicResource SecondaryColor}" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+                <Label x:Name="CheckInError" 
+                       FontSize="Small"
+                       TextColor="Red"/>
+            </VerticalStackLayout>
+
+            <Button Text="Apply Filters"
+                Clicked="OnApplyFiltersClicked"
+                BackgroundColor="{DynamicResource PrimaryColor}"
+                TextColor="{DynamicResource SecondaryTextColor}"
+                FontAttributes="Bold"
+                CornerRadius="10" />
+
+        </VerticalStackLayout>
+    </Frame>
+
+</ContentPage>

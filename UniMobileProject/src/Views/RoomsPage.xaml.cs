@@ -13,12 +13,16 @@ namespace UniMobileProject.src.Views
 
         private DateTime? _checkInDate = null;
         private DateTime? _checkOutDate = null;
+        decimal? _minPrice = null;
+        decimal? _maxPrice = null;
 
         public RoomsPage(int hotelId)
         {
             InitializeComponent();
+
             _hotelId = hotelId;
             _roomService = new RoomService(new HttpServiceFactory(), new SerializationFactory());
+
             LoadRooms();
         }
 
@@ -50,83 +54,63 @@ namespace UniMobileProject.src.Views
                 await DisplayAlert("Error", "Failed to load rooms.", "OK");
             }
         }
-
-        private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        
+        private async void OnSearchButtonPressed(object sender, EventArgs e)
         {
             // Извлекаем текстовые значения из поисковых строк
-            string type = TypeSearchBar.Text?.Trim();
-            decimal? priceMin = null;
-            decimal? priceMax = null;
-
-            // Парсим минимальную цену, если введена
-            if (decimal.TryParse(MinPriceSearchBar.Text, out decimal minPrice))
-            {
-                priceMin = minPrice;
-            }
-
-            // Парсим максимальную цену, если введена
-            if (decimal.TryParse(MaxPriceSearchBar.Text, out decimal maxPrice))
-            {
-                priceMax = maxPrice;
-            }
-
-            Console.WriteLine($"Search Parameters - Type: {type}, Price Min: {priceMin}, Price Max: {priceMax}");
+            string type = TypeSearchBar.Text?.Trim() ?? string.Empty; 
 
             // Загружаем комнаты с текущими фильтрами, включая даты
-            await LoadRooms(type, priceMin, priceMax, _checkInDate, _checkOutDate);
+            await LoadRooms(type, null, null, _checkInDate, _checkOutDate);
         }
 
-        private async void OnDateSelected(object sender, DateChangedEventArgs e)
+        private async void OnRoomSelected(object sender, SelectionChangedEventArgs e)
         {
-            // Обновляем дату заезда или выезда в зависимости от активного DatePicker
-            if (sender == CheckInDatePicker)
+            if (e.CurrentSelection.FirstOrDefault() is RoomModel selectedHotel)
             {
-                _checkInDate = e.NewDate;
-            }
-            else if (sender == CheckOutDatePicker)
-            {
-                _checkOutDate = e.NewDate;
-            }
+                await Navigation.PushAsync(new RoomDetailsPage(selectedHotel));
 
-            // Поиск выполняется только если выбраны обе даты
-            if (_checkInDate.HasValue && _checkOutDate.HasValue)
-            {
-                // Проверяем, что дата выезда позже даты заезда
-                if (_checkOutDate <= _checkInDate)
-                {
-                    await DisplayAlert("Error", "Check-out date must be after check-in date.", "OK");
-                    return;
-                }
-
-                // Получаем текущие значения из других фильтров
-                string type = TypeSearchBar.Text?.Trim();
-                decimal? priceMin = null;
-                decimal? priceMax = null;
-
-                if (decimal.TryParse(MinPriceSearchBar.Text, out decimal minPrice))
-                {
-                    priceMin = minPrice;
-                }
-
-                if (decimal.TryParse(MaxPriceSearchBar.Text, out decimal maxPrice))
-                {
-                    priceMax = maxPrice;
-                }
-
-                Console.WriteLine($"Search Parameters - Type: {type}, Price Min: {priceMin}, Price Max: {priceMax}, Check-in: {_checkInDate}, Check-out: {_checkOutDate}");
-
-                // Загружаем комнаты
-                await LoadRooms(type, priceMin, priceMax, _checkInDate, _checkOutDate);
+                ((CollectionView)sender).SelectedItem = null;
             }
         }
 
-        private async void OnRoomTapped(object sender, ItemTappedEventArgs e)
+        private async void OnFilterButtonClicked(object sender, EventArgs e)
         {
-            if (e.Item != null)
-            {
-                var selectedRoom = (RoomModel)e.Item;
-                await Navigation.PushAsync(new RoomDetailsPage(selectedRoom));
-            }
+            var filtersPopup = new RoomFilterPopup(_minPrice, _maxPrice, _checkInDate, _checkOutDate);
+
+            filtersPopup.FiltersApplied += OnFiltersApplied;
+
+            await Navigation.PushModalAsync(filtersPopup);
+        }
+        private async void OnSearchResetButtonPressed(object sender, EventArgs e)
+        {
+            TypeSearchBar.Text = "";
+
+            _checkInDate = null;
+            _checkOutDate = null;
+            _minPrice = null;
+            _maxPrice = null;
+
+            await LoadRooms();
+        }
+
+        private async void OnFiltersApplied(object sender, FilterData e)
+        {
+            // Отримання значень фільтрів
+            string? type = TypeSearchBar.Text?.Trim();
+
+            _checkInDate = e.CheckInDate;
+            _checkOutDate = e.CheckOutDate;
+            _maxPrice = e.MaxPrice;
+            _minPrice = e.MinPrice;
+
+            // Використання переданих фільтрів для завантаження кімнат
+            await LoadRooms(
+                type,
+                e.MinPrice,
+                e.MaxPrice,
+                e.CheckInDate,
+                e.CheckOutDate);
         }
     }
 }

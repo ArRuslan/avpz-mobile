@@ -33,12 +33,12 @@ namespace UniMobileProject.src.Views
                 return;
             }
 
-            //var captchaPopup = new ReCaptchaPopup();
-            //await Navigation.PushModalAsync(captchaPopup);
+            var captchaPopup = new ReCaptchaPopup();
+            await Navigation.PushModalAsync(captchaPopup);
 
             // Очікуємо завершення попапу
-            _captchaToken = "123456789";
-            //_captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
+            //_captchaToken = "123456789";
+            _captchaToken = await captchaPopup.CaptchaTokenCompletionSource.Task;
 
             await LoginUser(email, password);
         }
