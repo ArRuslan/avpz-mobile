@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\edit_data_icon.png" />
+	  <None Remove="Resources\Images\hhb_logo.png" />
 	  <None Remove="Resources\Images\main_page_icon.png" />
 	  <None Remove="Resources\Images\user_bookings_page_icon.png" />
 	  <None Remove="Resources\Images\user_profile_page_icon.png" />

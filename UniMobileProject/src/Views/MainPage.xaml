@@ -5,52 +5,99 @@
              Title="Hotels"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-    <VerticalStackLayout>
-        <!-- Title -->
-        <Label 
-            Text="Hotels List"
-            FontSize="24"
-            FontAttributes="Bold"
-            HorizontalOptions="Center"
-            VerticalOptions="Start"
-            TextColor="{DynamicResource QuaternaryColor}"
-            Margin="0,10,0,10" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="30">
 
-        <!-- Search Bars -->
-        <SearchBar 
-            Placeholder="Search by name"
-            TextChanged="OnSearchTextChanged"
-            x:Name="NameSearchBar" />
+            <HorizontalStackLayout HorizontalOptions="Start" Spacing="10">
+                <Image Source="hhb_logo.png" 
+                       HeightRequest="50" 
+                       Aspect="AspectFit" />
 
-        <SearchBar 
-            Placeholder="Search by address"
-            TextChanged="OnSearchTextChanged"
-            x:Name="AddressSearchBar" />
+                <Label Text="Hotels"
+                           FontSize="Title"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           VerticalOptions="Center" />
+            </HorizontalStackLayout>
 
-        <SearchBar 
-            Placeholder="Search by description"
-            TextChanged="OnSearchTextChanged"
-            x:Name="DescriptionSearchBar" />
+            <VerticalStackLayout Spacing="10">
+                <HorizontalStackLayout HorizontalOptions="EndAndExpand">
+                    <Label Text="Search Property" 
+                       FontSize="Subtitle" 
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource PrimaryTextColor}" 
+                       VerticalOptions="Center"/>
+                    <Picker x:Name="SearchPropertyPicker"
+                        SelectedItem="Name"
+                        SelectedIndexChanged="OnSearchPropertyChanged"
+                        HorizontalOptions="Fill"
+                        TextColor="{DynamicResource QuaternaryTextColor}"
+                        FontSize="Subtitle"
+                        WidthRequest="90">
+                        <Picker.Items>
+                            <x:String>Name</x:String>
+                            <x:String>Address</x:String>
+                            <x:String>Description</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </HorizontalStackLayout>
 
-        <ListView ItemsSource="{Binding Hotels}" 
-                  VerticalOptions="FillAndExpand"
-                  x:Name="HotelsListView"
-                  HasUnevenRows="True"
-                  ItemTapped="OnHotelTapped">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Frame Padding="10" Margin="5" CornerRadius="8" BorderColor="Gray">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" TextColor="Black" />
-                                <Button Text="View Rooms"
-                                        Command="{Binding Path=BindingContext.NavigateToRoomsCommand, Source={x:Reference HotelsListView}}"
-                                        CommandParameter="{Binding .}" />
+                <Frame BorderColor="{DynamicResource PrimaryColor}" 
+                       BackgroundColor="{DynamicResource SecondaryColor}"  
+                       CornerRadius="30"
+                       Padding="5">
+                    <SearchBar Placeholder="Search"
+                           SearchButtonPressed="OnSearchButtonPressed"
+                           x:Name="SearchHotels" 
+                           WidthRequest="290"
+                           PlaceholderColor="{DynamicResource QuaternaryTextColor}"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+                </Frame>
+            </VerticalStackLayout>
+
+            <CollectionView ItemsSource="{Binding Hotels}" 
+                            VerticalOptions="FillAndExpand"
+                            x:Name="HotelsListView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnHotelSelected">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="2" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" 
+                               Margin="5" 
+                               CornerRadius="8" 
+                               BorderColor="{DynamicResource PrimaryColor}" 
+                               BackgroundColor="{DynamicResource SecondaryColor}"
+                               InputTransparent="True"
+                               HeightRequest="150">
+                            <VerticalStackLayout VerticalOptions="EndAndExpand"
+                                                 Spacing="3">
+                                <Label Text="{Binding Name}" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold"  
+                                       TextColor="{DynamicResource PrimaryTextColor}" />
+                                <Label Text="{Binding Description}" 
+                                       FontSize="18"
+                                       TextColor="{DynamicResource PrimaryTextColor}" />
                             </VerticalStackLayout>
                         </Frame>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button x:Name="ToggleMfaButton" 
+                    Text="Reset Search" 
+                    Clicked="OnSearchResetButtonPressed" 
+                    BackgroundColor="{DynamicResource SecondaryColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}"
+                    BorderColor="{DynamicResource PrimaryColor}"
+                    FontAttributes="Bold"
+                    BorderWidth="2"
+                    CornerRadius="20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
