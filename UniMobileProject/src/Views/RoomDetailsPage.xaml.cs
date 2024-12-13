@@ -1,5 +1,6 @@
 using UniMobileProject.src.Models.ServiceModels.RoomModels;
 using Microsoft.Maui.Controls;
+using Microsoft.Extensions.Configuration;
 
 namespace UniMobileProject.src.Views
 {
@@ -19,6 +20,14 @@ namespace UniMobileProject.src.Views
             RoomTypeLabel.Text = _room.Type;
             RoomPriceLabel.Text = $"Price: {_room.Price:C}";
             RoomAvailableLabel.Text = _room.Available ? "Available" : "Not Available";
+        }
+
+        private async void OnBookClicked(object sender, EventArgs e)
+        {
+            if (this._room.Available)
+            {
+                await Navigation.PushAsync(new RoomBookPage(_room));
+            }
         }
     }
 }
