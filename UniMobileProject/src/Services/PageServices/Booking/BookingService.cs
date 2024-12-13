@@ -37,7 +37,8 @@ namespace UniMobileProject.src.Services.PageServices.Booking
 
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpService.GetClient().PostAsync("", httpContent) // default path is the endpoint
+            string fullUrl = new Uri(new Uri(_httpService.GetClient().BaseAddress!.ToString().TrimEnd('/')), "bookings").ToString();
+            var response = await _httpService.GetClient().PostAsync(fullUrl, httpContent) // default path is the endpoint
                 ?? throw new ArgumentNullException("Response from the server was not received");
 
             string responseBody = await response.Content.ReadAsStringAsync();

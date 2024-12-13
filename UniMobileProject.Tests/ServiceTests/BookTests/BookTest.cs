@@ -7,9 +7,9 @@ public class BookTest
     private BookingService service = new BookingService("mytestdb.db");
     [Fact]
     public async void BookingTest() {
-        int roomId = 1;
-        DateTime checkIn = DateTime.Now;
-        DateTime checkOut = DateTime.Now.AddDays(2);
+        int roomId = 2;
+        DateTime checkIn = DateTime.Now.AddDays(3);
+        DateTime checkOut = DateTime.Now.AddDays(5);
 
         var response = await service.BookRoom(roomId, checkIn, checkOut);
         Assert.NotNull(response);

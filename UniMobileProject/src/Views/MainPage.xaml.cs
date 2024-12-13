@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using UniMobileProject.src.Models.ServiceModels.HotelModels;

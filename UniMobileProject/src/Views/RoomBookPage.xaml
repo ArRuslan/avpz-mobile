@@ -14,5 +14,6 @@
         <DatePicker x:Name="CheckIn"></DatePicker>
         <DatePicker x:Name="CheckOut"></DatePicker>
         <Button Clicked="OnBookClicked"></Button>
+        <WebView x:Name="PayPalWV"></WebView>
     </VerticalStackLayout>
 </ContentPage>
