@@ -4,6 +4,7 @@ using UniMobileProject.src.Models.ServiceModels.BookingModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
+using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject.src.Services.PageServices.Booking
@@ -11,15 +12,15 @@ namespace UniMobileProject.src.Services.PageServices.Booking
     public class BookingService
     {
         private HttpService _httpService;
-        private ISerializer _serializer;
+        private IDeserializer _deserializer;
         private TokenMaintainer _tokenMaintainer;
 
         public BookingService(string testDb = null)
         {
-            ISerializationFactory serializationFactory = new SerializationFactory();
+            IDeserializationFactory serializationFactory = new DeserializationFactory();
             IHttpServiceFactory httpFactory = new HttpServiceFactory();
             _httpService = httpFactory.Create("bookings");
-            _serializer = serializationFactory.Create(Enums.SerializerType.Booking);
+            _deserializer = serializationFactory.Create(Enums.DeserializerType.Booking);
             if (string.IsNullOrEmpty(testDb)) _tokenMaintainer = new TokenMaintainer();
             else _tokenMaintainer = new TokenMaintainer(testDb);
         }
@@ -29,7 +30,7 @@ namespace UniMobileProject.src.Services.PageServices.Booking
             string checkOutStr = checkOut.ToString("yyyy-MM-dd");
 
             BookingRequestModel bookingRequest = new BookingRequestModel(roomId, checkInStr, checkOutStr);
-            var json = _serializer.Serialize<BookingRequestModel>(bookingRequest);
+            var json = Serializer.Serialize<BookingRequestModel>(bookingRequest);
             if (!await AddTokenToHeader())
             {
                 return new ErrorResponse() { Errors = new List<string> {"Error appeared during room booking (couldn't get token)"} };
@@ -46,11 +47,11 @@ namespace UniMobileProject.src.Services.PageServices.Booking
             RequestResponse responseObject;
             if (response.IsSuccessStatusCode)
             {
-                responseObject = await _serializer.Deserialize<SuccessfulBooking>(responseBody);
+                responseObject = await _deserializer.Deserialize<SuccessfulBooking>(responseBody);
             }
             else
             {
-                responseObject = await _serializer.Deserialize<ErrorResponse>(responseBody);
+                responseObject = await _deserializer.Deserialize<ErrorResponse>(responseBody);
             }
             return responseObject;
             

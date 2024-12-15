@@ -9,6 +9,7 @@ using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
+using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject.src.Services.PageServices.Profile
@@ -17,11 +18,11 @@ namespace UniMobileProject.src.Services.PageServices.Profile
     {
         private HttpClient _httpClient;
         private DatabaseService _dbService;
-        private ISerializer _serializer;
-        public ProfileService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory, string testDb = null)
+        private IDeserializer _serializer;
+        public ProfileService(IHttpServiceFactory httpServiceFactory, IDeserializationFactory serializationFactory, string testDb = null)
         {
             _httpClient = httpServiceFactory.Create("user").GetClient();
-            _serializer = serializationFactory.Create(Enums.SerializerType.Profile);
+            _serializer = serializationFactory.Create(Enums.DeserializerType.Profile);
             _dbService = testDb != null ? new DatabaseService(testDb) : new DatabaseService();
         }
 
@@ -48,7 +49,7 @@ namespace UniMobileProject.src.Services.PageServices.Profile
 
         public async Task<RequestResponse> EnableMfa(EnableMfaModel model)
         {
-            string json = _serializer.Serialize(model);
+            string json = Serializer.Serialize(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
@@ -76,7 +77,7 @@ namespace UniMobileProject.src.Services.PageServices.Profile
 
         public async Task<RequestResponse> DisableMfa(DisableMfaModel model)
         {
-            string json = _serializer.Serialize(model);
+            string json = Serializer.Serialize(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
@@ -109,7 +110,7 @@ namespace UniMobileProject.src.Services.PageServices.Profile
                 throw new Exception("Can't add token in http client");
             }
 
-            string json = _serializer.Serialize<EditProfileModel>(model);
+            string json = Serializer.Serialize<EditProfileModel>(model);
             if(json == null)
             {
                 throw new ArgumentNullException("Parsed mdel can't be null");

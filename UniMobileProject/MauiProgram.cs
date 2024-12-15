@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject
 {
@@ -29,7 +29,7 @@ namespace UniMobileProject
                 });
 
             builder.Services.AddScoped<IHttpServiceFactory, HttpServiceFactory>();
-            builder.Services.AddScoped<ISerializationFactory, SerializationFactory>();
+            builder.Services.AddScoped<IDeserializationFactory, DeserializationFactory>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

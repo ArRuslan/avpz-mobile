@@ -2,7 +2,7 @@ using UniMobileProject.src.Models.ServiceModels.RoomModels;
 using UniMobileProject.src.Services.PageServices.Room;
 using Microsoft.Maui.Controls;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 using Microsoft.Extensions.Configuration;
 
 namespace UniMobileProject.src.Views
@@ -16,7 +16,7 @@ namespace UniMobileProject.src.Views
         {
             InitializeComponent();
             _hotelId = hotelId;
-            _roomService = new RoomService(new HttpServiceFactory(), new SerializationFactory());
+            _roomService = new RoomService(new HttpServiceFactory(), new DeserializationFactory());
             LoadRooms();
         }
 

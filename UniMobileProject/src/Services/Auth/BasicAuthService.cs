@@ -5,20 +5,21 @@ using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Database;
 using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Views;
+using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject.src.Services.Auth
 {
     public class BasicAuthService
     {
         private HttpService _httpService;
-        private ISerializer _serializer;
+        private IDeserializer _serializer;
         private readonly DatabaseService _dbService;
-        public BasicAuthService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory, string testDb = null)
+        public BasicAuthService(IHttpServiceFactory httpServiceFactory, IDeserializationFactory serializationFactory, string testDb = null)
         {
             _httpService = httpServiceFactory.Create("auth");
-            _serializer = serializationFactory.Create(Enums.SerializerType.Auth);
+            _serializer = serializationFactory.Create(Enums.DeserializerType.Auth);
             if (string.IsNullOrEmpty(testDb))
             {
                 _dbService = new DatabaseService();
@@ -36,7 +37,7 @@ namespace UniMobileProject.src.Services.Auth
 
         public async Task<RequestResponse> Login(LoginModel model)
         {
-            string json = _serializer.Serialize<LoginModel>(model);
+            string json = Serializer.Serialize<LoginModel>(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Отправляем запрос на сервер для логина
@@ -104,7 +105,7 @@ namespace UniMobileProject.src.Services.Auth
 
         public async Task<RequestResponse> LoginWithMfa(MfaLoginModel model)
         {
-            string json = _serializer.Serialize<MfaLoginModel>(model);
+            string json = Serializer.Serialize<MfaLoginModel>(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await _httpService.GetClient().PostAsync("login/mfa", httpContent);
@@ -124,7 +125,7 @@ namespace UniMobileProject.src.Services.Auth
 
         public async Task<RequestResponse> Register(RegisterModel model)
         {
-            string json = _serializer.Serialize<RegisterModel>(model);
+            string json = Serializer.Serialize<RegisterModel>(model);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpService.GetClient().PostAsync("register", httpContent) ??
                 throw new ArgumentNullException("Response from the server was not received. " +
@@ -146,7 +147,7 @@ namespace UniMobileProject.src.Services.Auth
         public async Task<bool> RequestPasswordReset(string email)
         {
             var payload = new { email = email };
-            string json = _serializer.Serialize(payload);
+            string json = Serializer.Serialize(payload);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await _httpService.GetClient().PostAsync("reset-password/request", httpContent) ??
