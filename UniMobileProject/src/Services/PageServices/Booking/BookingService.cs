@@ -71,5 +71,22 @@ namespace UniMobileProject.src.Services.PageServices.Booking
             return await _deserializer.Deserialize<ErrorResponse>(responseBody);
 
         }
+        
+        public async Task<RequestResponse> GetTokenForQR(int bookingId)
+        {
+            var response = await _httpClient.GetAsync($"{bookingId}/verification-token");
+
+            RequestResponse responseObj;
+            string responseBody = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                responseObj = await _deserializer.Deserialize<BookingQrModel>(responseBody);
+            }
+            else
+            {
+                responseObj = await _deserializer.Deserialize<ErrorResponse>(responseBody);
+            }
+            return responseObj;
+        }
     }
 }
