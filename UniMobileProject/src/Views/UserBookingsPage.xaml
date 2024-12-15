@@ -8,10 +8,25 @@
     <VerticalStackLayout>
         
         <Label 
-            Text="My Bookings"
+            x:Name="NoBookingsMessage"
+            Text="You haven't booked any room yet"
+            FontSize="Large"
             VerticalOptions="Center" 
             HorizontalOptions="Center" 
             TextColor="{DynamicResource QuaternaryColor}"/>
+        <ListView x:Name="MyBookingsListView" IsPullToRefreshEnabled="True" ItemTapped="MyBookingsListView_ItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5">
+                            <Label Text="{Binding CheckIn}" FontSize="16"></Label>
+                            <Label Text="{Binding CheckOut}" FontSize="16"></Label>
+                            <Label Text="{Binding TotalPrice, StringFormat='Price: {0:C}'}"></Label>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         
     </VerticalStackLayout>
 </ContentPage>
