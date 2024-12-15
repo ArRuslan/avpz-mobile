@@ -4,7 +4,7 @@ using UniMobileProject.src.Models.ServiceModels;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Profile;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Services.Auth;
 using System.Security.Cryptography;
 using QRCoder;
@@ -25,7 +25,7 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
 
             var httpServiceFactory = new HttpServiceFactory();
-            var serializationFactory = new SerializationFactory();
+            var serializationFactory = new DeserializationFactory();
 
             _profileService = new ProfileService(httpServiceFactory, serializationFactory);
             _authService = new BasicAuthService(httpServiceFactory, serializationFactory);

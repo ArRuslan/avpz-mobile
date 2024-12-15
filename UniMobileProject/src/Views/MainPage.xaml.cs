@@ -4,7 +4,7 @@ using System.Windows.Input;
 using UniMobileProject.src.Models.ServiceModels.HotelModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Hotels;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.src.Views
 {
@@ -20,7 +20,7 @@ namespace UniMobileProject.src.Views
 
             _hotelService = new HotelService(
                 new HttpServiceFactory(),
-                new SerializationFactory()
+                new DeserializationFactory()
             );
 
             Hotels = new ObservableCollection<HotelModel>();

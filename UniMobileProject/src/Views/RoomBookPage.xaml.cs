@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using UniMobileProject.src.Models.ServiceModels.BookingModels;
 using UniMobileProject.src.Models.ServiceModels.RoomModels;
 using UniMobileProject.src.Services.PageServices.Booking;
-using PayPalCheckoutSdk;
 using System.Web;
 
 namespace UniMobileProject.src.Views;
