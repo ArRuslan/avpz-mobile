@@ -6,12 +6,13 @@ using UniMobileProject.src.Services.Database.Models;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Services.Serialization;
+using System.Net.Http.Json;
 
 namespace UniMobileProject.src.Services.PageServices.Booking
 {
     public class BookingService
     {
-        private HttpService _httpService;
+        private HttpClient _httpClient;
         private IDeserializer _deserializer;
         private TokenMaintainer _tokenMaintainer;
 
@@ -19,7 +20,7 @@ namespace UniMobileProject.src.Services.PageServices.Booking
         {
             IDeserializationFactory serializationFactory = new DeserializationFactory();
             IHttpServiceFactory httpFactory = new HttpServiceFactory();
-            _httpService = httpFactory.Create("bookings");
+            _httpClient= httpFactory.Create("bookings").GetClient();
             _deserializer = serializationFactory.Create(Enums.DeserializerType.Booking);
             if (string.IsNullOrEmpty(testDb)) _tokenMaintainer = new TokenMaintainer();
             else _tokenMaintainer = new TokenMaintainer(testDb);
@@ -31,15 +32,15 @@ namespace UniMobileProject.src.Services.PageServices.Booking
 
             BookingRequestModel bookingRequest = new BookingRequestModel(roomId, checkInStr, checkOutStr);
             var json = Serializer.Serialize<BookingRequestModel>(bookingRequest);
-            if (!await AddTokenToHeader())
+            if (!HeaderTokenService.AddTokenToHeader(_tokenMaintainer, ref _httpClient))
             {
                 return new ErrorResponse() { Errors = new List<string> {"Error appeared during room booking (couldn't get token)"} };
             }
 
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            string fullUrl = new Uri(new Uri(_httpService.GetClient().BaseAddress!.ToString().TrimEnd('/')), "bookings").ToString();
-            var response = await _httpService.GetClient().PostAsync(fullUrl, httpContent) // default path is the endpoint
+            string fullUrl = new Uri(new Uri(_httpClient.BaseAddress!.ToString().TrimEnd('/')), "bookings").ToString();
+            var response = await _httpClient.PostAsync(fullUrl, httpContent) // default path is the endpoint
                 ?? throw new ArgumentNullException("Response from the server was not received");
 
             string responseBody = await response.Content.ReadAsStringAsync();
@@ -57,31 +58,18 @@ namespace UniMobileProject.src.Services.PageServices.Booking
             
         }
 
-        private async Task<bool> AddTokenToHeader()
+        public async Task<RequestResponse?> CancelBooking(int bookingId)
         {
-            Token? token = await _tokenMaintainer.GetToken();
-            if (token == null) return false;
-            var currentTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            if (token.ExpiresAtTimeSpan < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            var httpContent = new StringContent(JsonContent.Create(new {bookind_id = bookingId}).ToString(), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"{bookingId}/cancel", httpContent) ?? throw new ArgumentNullException("Cancel request was not successful");
+
+            if (response.IsSuccessStatusCode)
             {
-                return false;
+                return null;
             }
-            if (_httpService.GetClient().DefaultRequestHeaders.Contains("x-token"))
-            {
-                var header = _httpService.GetClient().DefaultRequestHeaders.First(a => a.Key == "x-token");
-                if (header.Value.Any(a => a == token.TokenString))
-                {
-                    return true;
-                }
-                else
-                {
-                    _httpService.GetClient().DefaultRequestHeaders.Remove("x-token");
-                    _httpService.GetClient().DefaultRequestHeaders.Add("x-token", token.TokenString);
-                    return true;
-                }
-            }
-            _httpService.GetClient().DefaultRequestHeaders.Add("x-token", token.TokenString);
-            return true;
+            var responseBody = await response.Content.ReadAsStringAsync();
+            return await _deserializer.Deserialize<ErrorResponse>(responseBody);
+
         }
     }
 }

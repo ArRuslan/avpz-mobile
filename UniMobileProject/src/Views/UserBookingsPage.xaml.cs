@@ -28,8 +28,13 @@ public partial class UserBookingsPage : ContentPage
 		}
 	}
 
-    private void MyBookingsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void MyBookingsListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-
+		if (e.Item != null)
+		{
+			var selectedItem = (SuccessfulBooking)e.Item;
+			await Navigation.PushAsync(new UserBookingPage(selectedItem));
+			LoadBookings();
+		}
     }
 }
