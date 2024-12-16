@@ -59,8 +59,8 @@ public partial class UserBookingPage : ContentPage
 
 		BookingQrModel tokenModel = (BookingQrModel)serverResponse;
 
-        if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() < tokenModel.ExpiresIn)
-        {
+		if(DateTimeOffset.UtcNow.ToUnixTimeSeconds() < tokenModel.ExpiresIn)
+		{
 			await DisplayAlert("Error", "QR code is expired, try again", "Ok");
 			return;
 		}
