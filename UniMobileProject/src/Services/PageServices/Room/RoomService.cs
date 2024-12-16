@@ -18,7 +18,15 @@ namespace UniMobileProject.src.Services.PageServices.Room
             _serializer = serializationFactory.Create(Enums.DeserializerType.Room);
         }
 
-        public async Task<PaginatedResponse<RoomModel>?> GetRooms(int hotelId, int page = 1, int pageSize = 5, string? type = null, decimal? priceMin = null, decimal? priceMax = null)
+        public async Task<PaginatedResponse<RoomModel>?> GetRooms(
+    int hotelId,
+    int page = 1,
+    int pageSize = 50,
+    string? type = null,
+    decimal? priceMin = null,
+    decimal? priceMax = null,
+    string? checkIn = null,
+    string? checkOut = null)
 
         {
             string query = $"?hotel_id={hotelId}&page={page}&page_size={pageSize}";

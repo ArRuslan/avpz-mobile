@@ -60,7 +60,7 @@ namespace UniMobileProject.src.Services.PageServices.Booking
 
         public async Task<RequestResponse?> CancelBooking(int bookingId)
         {
-            var httpContent = new StringContent(JsonContent.Create(new {bookind_id = bookingId}).ToString(), Encoding.UTF8, "application/json");
+            var httpContent = new StringContent("{}");
             var response = await _httpClient.PostAsync($"{bookingId}/cancel", httpContent) ?? throw new ArgumentNullException("Cancel request was not successful");
 
             if (response.IsSuccessStatusCode)
