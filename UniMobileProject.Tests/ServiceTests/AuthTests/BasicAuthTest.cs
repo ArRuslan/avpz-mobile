@@ -1,24 +1,24 @@
 ﻿using UniMobileProject.src.Models.ServiceModels.AuthModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.Tests.ServiceTests.AuthTests
 {
     public class BasicAuthTest
     {
         private IHttpServiceFactory _httpFactory;
-        private ISerializationFactory _serializationFactory;
+        private IDeserializationFactory _serializationFactory;
         private BasicAuthService service;
-        private LoginModel correctLoginData = new LoginModel("newemail@gmail.com", "somePassword123");
+        private LoginModel correctLoginData = new LoginModel("email2@gmail.com", "Password12_");
         private RegisterModel correctRegisterData = new RegisterModel(
             "newemail@gmail.com", "somePassword123", "John", "Doe", "+4916092545328");
 
         public BasicAuthTest()
         {
             _httpFactory = new HttpServiceFactory();
-            _serializationFactory = new SerializationFactory();
-            service = new BasicAuthService(_httpFactory, _serializationFactory);
+            _serializationFactory = new DeserializationFactory();
+            service = new BasicAuthService(_httpFactory, _serializationFactory, "mytestdb.db");
         }
 
         [Fact]

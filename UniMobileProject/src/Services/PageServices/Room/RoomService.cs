@@ -3,30 +3,23 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels.RoomModels;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.src.Services.PageServices.Room
 {
     public class RoomService
     {
         private HttpClient _httpClient;
-        private ISerializer _serializer;
+        private IDeserializer _serializer;
 
-        public RoomService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory)
+        public RoomService(IHttpServiceFactory httpServiceFactory, IDeserializationFactory serializationFactory)
         {
             _httpClient = httpServiceFactory.Create("rooms").GetClient();
-            _serializer = serializationFactory.Create(Enums.SerializerType.Room);
+            _serializer = serializationFactory.Create(Enums.DeserializerType.Room);
         }
 
-        public async Task<PaginatedResponse<RoomModel>?> GetRooms(
-            int hotelId,
-            int page = 1,
-            int pageSize = 50,
-            string? type = null,
-            decimal? priceMin = null,
-            decimal? priceMax = null,
-            string? checkIn = null,
-            string? checkOut = null)
+        public async Task<PaginatedResponse<RoomModel>?> GetRooms(int hotelId, int page = 1, int pageSize = 5, string? type = null, decimal? priceMin = null, decimal? priceMax = null)
+
         {
             string query = $"?hotel_id={hotelId}&page={page}&page_size={pageSize}";
 

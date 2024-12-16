@@ -1,12 +1,13 @@
 ﻿using UniMobileProject.src.Models.ServiceModels.AuthModels;
+using UniMobileProject.src.Services.Deserialization;
 using UniMobileProject.src.Services.Serialization;
 
 namespace UniMobileProject.Tests.ServiceTests.SerializerTests
 {
     public class AuthSerializerTest
     {
-        private ISerializationFactory _factory;
-        private ISerializer serializer;
+        private IDeserializationFactory _factory;
+        private IDeserializer serializer;
         private List<(string, SuccessfulAuth)> successfulJsonRequestDeserialize = new List<(string, SuccessfulAuth)>()
         {
             new ("{\"token\": \"tokendata\"}", new SuccessfulAuth(){ResponseContent = "tokendata"})
@@ -37,8 +38,8 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
 
         public AuthSerializerTest()
         {
-            _factory = new SerializationFactory();
-            serializer = _factory.Create(src.Enums.SerializerType.Auth);
+            _factory = new DeserializationFactory();
+            serializer = _factory.Create(src.Enums.DeserializerType.Auth);
         }
 
         [Fact]
@@ -66,7 +67,7 @@ namespace UniMobileProject.Tests.ServiceTests.SerializerTests
         {
             foreach(var (input, expected) in loginModelSerializationData)
             {
-                var actual = serializer.Serialize<LoginModel>(input);
+                var actual = Serializer.Serialize<LoginModel>(input);
                 Assert.Equal(expected, actual);
             }
         }

@@ -15,7 +15,11 @@
                    Padding="15">
 
                 <VerticalStackLayout Spacing="10">
-
+        <Label x:Name="RoomTypeLabel" FontSize="24" FontAttributes="Bold" />
+        <Label x:Name="RoomPriceLabel" FontSize="20" />
+        <Label x:Name="RoomAvailableLabel" FontSize="18" />
+        <Button
+            Text="Book room" WidthRequest="200" HeightRequest="50" Clicked="OnBookClicked"></Button>
                     <Label Text="Room Details" 
                        FontSize="Title" 
                        TextColor="{DynamicResource PrimaryTextColor}" 
@@ -70,5 +74,4 @@
             </Frame>
         </VerticalStackLayout>
     </ScrollView> 
-
 </ContentPage>

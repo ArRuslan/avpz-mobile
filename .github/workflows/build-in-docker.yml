@@ -12,7 +12,7 @@ jobs:
       - name: Build apks
         uses: addnab/docker-run-action@v3
         with:
-          image: conneqthub/dotnet-maui-android:latest
+          image: conneqthub/dotnet-maui-android:8.0.72
           options: -v ${{ github.workspace }}:/build
           run: |
               cd /build

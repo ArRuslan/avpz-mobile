@@ -3,19 +3,19 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using UniMobileProject.src.Models.ServiceModels.HotelModels;
 using UniMobileProject.src.Services.Http;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.src.Services.PageServices.Hotels
 {
     public class HotelService
     {
         private HttpClient _httpClient;
-        private ISerializer _serializer;
+        private IDeserializer _deserializer;
 
-        public HotelService(IHttpServiceFactory httpServiceFactory, ISerializationFactory serializationFactory)
+        public HotelService(IHttpServiceFactory httpServiceFactory, IDeserializationFactory serializationFactory)
         {
             _httpClient = httpServiceFactory.Create("hotels").GetClient();
-            _serializer = serializationFactory.Create(Enums.SerializerType.Hotel);
+            _deserializer = serializationFactory.Create(Enums.DeserializerType.Hotel);
         }
 
         public async Task<PaginatedResponse<HotelModel>?> GetHotels(int page = 1, int pageSize = 5, string? name = null, string? address = null, string? description = null)
@@ -37,7 +37,7 @@ namespace UniMobileProject.src.Services.PageServices.Hotels
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return await _serializer.Deserialize<PaginatedResponse<HotelModel>>(responseContent);
+                    return await _deserializer.Deserialize<PaginatedResponse<HotelModel>>(responseContent);
                 }
                 else
                 {

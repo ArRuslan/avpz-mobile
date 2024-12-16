@@ -2,7 +2,8 @@ using System;
 using UniMobileProject.src.Models.ServiceModels.RoomModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Room;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
+using Microsoft.Extensions.Configuration;
 
 namespace UniMobileProject.src.Views
 {
@@ -21,8 +22,7 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
 
             _hotelId = hotelId;
-            _roomService = new RoomService(new HttpServiceFactory(), new SerializationFactory());
-
+            _roomService = new RoomService(new HttpServiceFactory(), new DeserializationFactory());
             LoadRooms();
         }
 
@@ -33,7 +33,7 @@ namespace UniMobileProject.src.Views
             DateTime? checkIn = null,
             DateTime? checkOut = null)
         {
-            // Конвертируем даты в строковый формат "yyyy-MM-dd", если они установлены
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ "yyyy-MM-dd", пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             string? checkInString = checkIn?.ToString("yyyy-MM-dd");
             string? checkOutString = checkOut?.ToString("yyyy-MM-dd");
 
@@ -57,10 +57,10 @@ namespace UniMobileProject.src.Views
         
         private async void OnSearchButtonPressed(object sender, EventArgs e)
         {
-            // Извлекаем текстовые значения из поисковых строк
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             string type = TypeSearchBar.Text?.Trim() ?? string.Empty; 
 
-            // Загружаем комнаты с текущими фильтрами, включая даты
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
             await LoadRooms(type, null, null, _checkInDate, _checkOutDate);
         }
 
@@ -96,7 +96,7 @@ namespace UniMobileProject.src.Views
 
         private async void OnFiltersApplied(object sender, FilterData e)
         {
-            // Отримання значень фільтрів
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             string? type = TypeSearchBar.Text?.Trim();
 
             _checkInDate = e.CheckInDate;
@@ -104,7 +104,7 @@ namespace UniMobileProject.src.Views
             _maxPrice = e.MaxPrice;
             _minPrice = e.MinPrice;
 
-            // Використання переданих фільтрів для завантаження кімнат
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             await LoadRooms(
                 type,
                 e.MinPrice,

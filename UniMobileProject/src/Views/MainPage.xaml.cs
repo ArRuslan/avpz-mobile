@@ -1,9 +1,10 @@
+using Microsoft.Extensions.Configuration;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using UniMobileProject.src.Models.ServiceModels.HotelModels;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Hotels;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.src.Views
 {
@@ -19,15 +20,15 @@ namespace UniMobileProject.src.Views
         {
             InitializeComponent();
 
-            var httpServiceFactory = new HttpServiceFactory();
-            var serializationFactory = new SerializationFactory();
-
-            _hotelService = new HotelService(httpServiceFactory, serializationFactory);
+            _hotelService = new HotelService(
+                new HttpServiceFactory(),
+                new DeserializationFactory()
+            );
 
             Hotels = new ObservableCollection<HotelModel>();
             BindingContext = this;
 
-            // Инициализация команды для навигации
+            // Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї ГЄГ®Г¬Г Г­Г¤Г» Г¤Г«Гї Г­Г ГўГЁГЈГ Г¶ГЁГЁ
             NavigateToRoomsCommand = new Command<HotelModel>(async (hotel) => await NavigateToRooms(hotel));
 
         }

@@ -4,14 +4,14 @@ using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Auth;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.PageServices.Profile;
-using UniMobileProject.src.Services.Serialization;
+using UniMobileProject.src.Services.Deserialization;
 
 namespace UniMobileProject.Tests.ServiceTests.ProfileTests
 {
     public class ProfileTest
     {
         private IHttpServiceFactory _httpFactory;
-        private ISerializationFactory _serializationFactory;
+        private IDeserializationFactory _serializationFactory;
         private BasicAuthService authService;
         private ProfileService profileService;
         private TokenMaintainer _tokenMaintainer;
@@ -21,7 +21,7 @@ namespace UniMobileProject.Tests.ServiceTests.ProfileTests
         public ProfileTest()
         {
             _httpFactory = new HttpServiceFactory();
-            _serializationFactory = new SerializationFactory();
+            _serializationFactory = new DeserializationFactory();
             authService = new BasicAuthService(_httpFactory, _serializationFactory);
             profileService = new ProfileService(_httpFactory, _serializationFactory, "mytestdb.db");
             _tokenMaintainer = new TokenMaintainer("mytestdb.db");

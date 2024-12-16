@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniMobileProject.src.Views.RoomBookPage"
+             Title="RoomBookPage">
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to .NET MAUI!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label
+            Text="Booking the room"
+            HorizontalOptions="Start"></Label>
+        <DatePicker x:Name="CheckIn"></DatePicker>
+        <DatePicker x:Name="CheckOut"></DatePicker>
+        <Button Clicked="OnBookClicked"></Button>
+        <WebView x:Name="PayPalWV"></WebView>
+    </VerticalStackLayout>
+</ContentPage>

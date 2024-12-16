@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UniMobileProject.src.Enums
+namespace UniMobileProject.Tests.ServiceTests.MyBookingsTests
 {
-    public enum SerializerType
+    public class MyBookingsTest
     {
-        Auth,
-        Profile,
-        Hotel,
-        Room,
+        
     }
 }
