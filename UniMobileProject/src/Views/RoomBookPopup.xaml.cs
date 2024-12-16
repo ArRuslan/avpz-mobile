@@ -6,46 +6,69 @@ using System.Web;
 
 namespace UniMobileProject.src.Views;
 
-public partial class RoomBookPage : ContentPage
+public partial class RoomBookPopup : ContentPage
 {
     private RoomModel _roomToBook;
     private BookingService _bookingService;
     private IConfiguration _configuration;
-    public RoomBookPage(RoomModel room)
-    {
+
+    public event EventHandler<BookingData>? BookingCompleted;
+
+    public RoomBookPopup(RoomModel room)
+	{
         _roomToBook = room;
-		InitializeComponent();
+        InitializeComponent();
         _bookingService = new BookingService();
     }
 
     private async void OnBookClicked(object sender, EventArgs e)
     {
+        Error.Text = string.Empty;
+
         DateTime checkIn = CheckIn.Date;
         DateTime checkOut = CheckOut.Date;
         if (checkIn >= checkOut)
         {
-            await DisplayAlert("Error","Check out date should be bigger than check in date", "Ok");
+            Error.Text = "Check out date should be bigger than check in date";
             return;
         }
 
         var response = await _bookingService.BookRoom(_roomToBook.Id, checkIn, checkOut);
         if (response.IsSuccess)
         {
-            
+
             SuccessfulBooking booking = (SuccessfulBooking)response;
             if (booking == null || booking.PaymentId == null) throw new ArgumentNullException("Payment Id was null");
             try
             {
                 Uri uri = BuildCheckoutLink(booking.PaymentId);
                 await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+
+                // Створення об'єкта для передачі даних бронювання
+                var bookingData = new BookingData
+                {
+                    RoomId = _roomToBook.Id,
+                    CheckInDate = checkIn,
+                    CheckOutDate = checkOut,
+                    PaymentId = booking.PaymentId
+                };
+
+                // Виклик події для передачі результатів бронювання
+                BookingCompleted?.Invoke(this, bookingData);
+
+                // Закриття попапу після успішної оплати
+                await Navigation.PopModalAsync();
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error during payment process: {ex.Message}");
             }
         }
-        Console.WriteLine();
-        
+        else
+        {
+            Console.WriteLine("Booking failed.");
+        }
+
     }
 
     private Uri BuildCheckoutLink(string orderId)
@@ -62,4 +85,18 @@ public partial class RoomBookPage : ContentPage
 
         return uriBuilder.Uri;
     }
+
+    private void OnCancelBookingClicked(object sender, EventArgs e)
+    {
+        Navigation.PopModalAsync();
+    }
+}
+
+// Клас для передачі даних бронювання
+public class BookingData
+{
+    public int RoomId { get; set; }
+    public DateTime CheckInDate { get; set; }
+    public DateTime CheckOutDate { get; set; }
+    public string PaymentId { get; set; }
 }

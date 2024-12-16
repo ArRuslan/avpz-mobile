@@ -18,6 +18,13 @@
     
     <Color x:Key="TransparentColor">Transparent</Color>
 
+    <!-- Кольори статусів -->
+    <Color x:Key="PendingStatusColor">#FFA500</Color>
+    <Color x:Key="ActiveStatusColor">#90EE90</Color>
+    <Color x:Key="CancelledStatusColor">#D3D3D3</Color>
+    <Color x:Key="ExpiredStatusColor">#FF0000</Color>
+    <Color x:Key="AllStatusColor">#FFFFFF</Color>
+
     <x:String x:Key="FilterIconSource">filter_icon_light.png</x:String>
 
 </ResourceDictionary>

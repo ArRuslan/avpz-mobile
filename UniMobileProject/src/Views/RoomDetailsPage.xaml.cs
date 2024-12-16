@@ -24,10 +24,29 @@ namespace UniMobileProject.src.Views
 
         private async void OnBookClicked(object sender, EventArgs e)
         {
-            if (this._room.Available)
+            if (!_room.Available)
             {
-                await Navigation.PushAsync(new RoomBookPage(_room));
+                await DisplayAlert("Unavailable", "This room is not available for booking.", "OK");
+                return;
             }
+
+            var bookingPopup = new RoomBookPopup(_room);
+
+            bookingPopup.BookingCompleted += OnBookingCompleted;
+
+            await Navigation.PushModalAsync(bookingPopup);
+        }
+
+        private async void OnBookingCompleted(object sender, BookingData bookingData)
+        {
+            await DisplayAlert(
+                "Booking Confirmed",
+                $"Room {_room.Type} has been booked from {bookingData.CheckInDate:MM/dd/yyyy} to {bookingData.CheckOutDate:MM/dd/yyyy}.",
+                "OK"
+            );
+
+            // Повернення до попередньої сторінки
+            await Navigation.PopAsync();
         }
     }
 }

@@ -14,27 +14,51 @@ public partial class UserBookingsPage : ContentPage
 		LoadBookings();
 	}
 
-	private async void LoadBookings()
-	{
-		var myBookings = await _myBookingsService.GetBookings();
-		if (myBookings.Count > 0)
-		{
-			NoBookingsMessage.IsVisible = false;
-			MyBookingsListView.ItemsSource = myBookings.Result;
-		}
-		else
-		{
-			NoBookingsMessage.IsVisible = true;
-		}
-	}
-
-    private async void MyBookingsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void LoadBookings()
     {
-		if (e.Item != null)
-		{
-			var selectedItem = (SuccessfulBooking)e.Item;
-			await Navigation.PushAsync(new UserBookingPage(selectedItem));
-			LoadBookings();
-		}
+        var myBookings = await _myBookingsService.GetBookings();
+
+        if (myBookings != null && myBookings.Count > 0)
+        {
+            NoBookingsMessage.IsVisible = false;
+
+            // Сортування: спершу активні, потім скасовані
+            var activeBookings = myBookings.Result
+                .Where(b => b.Status != BookingStatus.CANCELLED)
+                .ToList();
+
+            var cancelledBookings = myBookings.Result
+                .Where(b => b.Status == BookingStatus.CANCELLED)
+                .ToList();
+
+            var sortedBookings = activeBookings.Concat(cancelledBookings).ToList();
+
+            MyBookingsListView.ItemsSource = sortedBookings;
+        }
+        else
+        {
+            NoBookingsMessage.IsVisible = true;
+        }
     }
+
+    private async void OnBookingSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
+        {
+            var selectedItem = (SuccessfulBooking)e.CurrentSelection.FirstOrDefault();
+            if (selectedItem != null)
+            {
+                await Navigation.PushAsync(new UserBookingPage(selectedItem));
+                LoadBookings();
+            }
+        }
+
+        // Reset selection to avoid keeping the item visually selected
+        var collectionView = sender as CollectionView;
+        if (collectionView != null)
+        {
+            collectionView.SelectedItem = null;
+        }
+    }
+
 }

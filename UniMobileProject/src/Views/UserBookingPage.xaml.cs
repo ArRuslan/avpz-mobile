@@ -9,6 +9,7 @@ public partial class UserBookingPage : ContentPage
 {
 	private SuccessfulBooking _booking = new SuccessfulBooking();
 	private BookingService _bookingService = new BookingService();
+
 	public UserBookingPage()
 	{
 		InitializeComponent();
@@ -18,7 +19,17 @@ public partial class UserBookingPage : ContentPage
 	{
 		_booking = booking;
 		InitializeComponent();
-	}
+		DisplayBookingDetails();
+    }
+
+	private void DisplayBookingDetails()
+	{
+        bookingId.Text = _booking.Id.ToString();
+        bookingCheckIn.Text = _booking.CheckIn;
+        bookingCheckOut.Text = _booking.CheckOut;
+        bookingTotalPrice.Text = $"{_booking.TotalPrice:C}";
+        bookingStatus.Text = char.ToUpper(_booking.Status.ToString()[0]) + _booking.Status.ToString().Substring(1).ToLower();
+    }
 
     private async void CancelBookingOnClicked(object sender, EventArgs e)
     {
@@ -48,8 +59,8 @@ public partial class UserBookingPage : ContentPage
 
 		BookingQrModel tokenModel = (BookingQrModel)serverResponse;
 
-		if(DateTimeOffset.UtcNow > DateTimeOffset.FromUnixTimeSeconds(tokenModel.ExpiresIn))
-		{
+        if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() < tokenModel.ExpiresIn)
+        {
 			await DisplayAlert("Error", "QR code is expired, try again", "Ok");
 			return;
 		}
@@ -58,6 +69,7 @@ public partial class UserBookingPage : ContentPage
 		var qrCodeImage = ImageSource.FromStream(() => qrCodeStream);
 
 		QRBookingImage.Source = qrCodeImage;
+        QRBookingImage.IsVisible = true;
     }
 
 	private Stream GenerateQrCode(string token)

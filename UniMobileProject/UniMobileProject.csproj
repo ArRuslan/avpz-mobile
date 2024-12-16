@@ -108,7 +108,7 @@
 	  <MauiXaml Update="src\Views\RegisterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="src\Views\RoomBookPage.xaml">
+	  <MauiXaml Update="src\Views\RoomBookPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="src\Views\RoomDetailsPage.xaml">

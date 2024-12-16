@@ -2,15 +2,122 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.UserBookingPage"
-             Title="UserBookingPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="Booking Details"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-        <Button Text="Cancel booking" Clicked="CancelBookingOnClicked"></Button>
-        <Button Text="QR to scan" Clicked="GetQRToScan"></Button>
-        <Image x:Name="QRBookingImage"></Image>
-    </VerticalStackLayout>
+    <ScrollView>
+        
+        <VerticalStackLayout Padding="20" 
+                             Spacing="30">
+            
+            <Frame BorderColor="{DynamicResource TertiaryColor}" 
+                   BackgroundColor="{DynamicResource TertiaryColor}" 
+                   CornerRadius="10" 
+                   Padding="15">
+
+                <VerticalStackLayout Padding="10" Spacing="30">
+
+                    <Label Text="Booking Details" 
+                           FontSize="Title" 
+                           TextColor="{DynamicResource PrimaryTextColor}" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Start" />
+                    
+                    <!-- Booking Details Section -->
+                    <Grid RowSpacing="10" ColumnSpacing="10" RowDefinitions="Auto, Auto, Auto, Auto, Auto"  VerticalOptions="CenterAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Booking:" 
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                        <Label x:Name="bookingId"
+                               Text=""
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+
+                        <Label Text="Check-in:" 
+                               FontSize="Medium"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}" 
+                               Grid.Row="1" />
+                        <Label x:Name="bookingCheckIn"
+                               FontSize="Medium"
+                               Text="" 
+                               Grid.Column="1" 
+                               Grid.Row="1" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+
+                        <Label Text="Check-out:" 
+                               FontSize="Medium"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               Grid.Row="2" />
+                        <Label x:Name="bookingCheckOut"
+                               FontSize="Medium"
+                               Text="" 
+                               Grid.Column="1" 
+                               Grid.Row="2" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+
+                        <Label Text="Total Price:" 
+                               FontSize="Medium"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               Grid.Row="3" />
+                        <Label x:Name="bookingTotalPrice"
+                               FontSize="Medium"
+                               Text="" 
+                               Grid.Column="1" 
+                               Grid.Row="3" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+
+                        <Label Text="Status:" 
+                               FontSize="Medium"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               Grid.Row="4" />
+                        <Label x:Name="bookingStatus"
+                               FontSize="Medium"
+                               Text="" 
+                               Grid.Column="1" 
+                               Grid.Row="4" 
+                               TextColor="{DynamicResource PrimaryTextColor}" />
+                    </Grid>
+
+                    <!-- Action Buttons -->
+                    <VerticalStackLayout Spacing="15">
+                        <Button Text="Cancel Booking"
+                            Clicked="CancelBookingOnClicked"
+                            BackgroundColor="{DynamicResource PrimaryColor}" 
+                            TextColor="{DynamicResource SecondaryTextColor}"
+                            FontAttributes="Bold"
+                            CornerRadius="20"/>
+
+                        <Button Text="Show QR Code"
+                            Clicked="GetQRToScan"
+                            BackgroundColor="{DynamicResource SecondaryColor}"
+                            TextColor="{DynamicResource PrimaryTextColor}"
+                            BorderColor="{DynamicResource PrimaryColor}"
+                            FontAttributes="Bold"
+                            BorderWidth="2"
+                            CornerRadius="20" />
+                    </VerticalStackLayout>
+
+                    <!-- QR Code Display -->
+                    <Image x:Name="QRBookingImage"
+                           HeightRequest="200"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           IsVisible="False"/>
+
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

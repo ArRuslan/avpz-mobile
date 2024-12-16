@@ -2,31 +2,91 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.UserBookingsPage"
-             Title="UserBookingsPage"
+             xmlns:local="clr-namespace:UniMobileProject.src.Converters"
+             Title="My Bookings"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
-    
-    <VerticalStackLayout>
-        
-        <Label 
-            x:Name="NoBookingsMessage"
-            Text="You haven't booked any room yet"
-            FontSize="Large"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" 
-            TextColor="{DynamicResource QuaternaryColor}"/>
-        <ListView x:Name="MyBookingsListView" IsPullToRefreshEnabled="True" ItemTapped="MyBookingsListView_ItemTapped">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Padding="5">
-                            <Label Text="{Binding CheckIn}" FontSize="16"></Label>
-                            <Label Text="{Binding CheckOut}" FontSize="16"></Label>
-                            <Label Text="{Binding TotalPrice, StringFormat='Price: {0:C}'}"></Label>
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        
-    </VerticalStackLayout>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:StatusToColorConverter x:Key="StatusToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="30">
+
+            <HorizontalStackLayout HorizontalOptions="Start" Spacing="10">
+                <Image Source="hhb_logo.png" 
+                       HeightRequest="50" 
+                       Aspect="AspectFit" />
+
+                <Label Text="My Bookings"
+                       FontSize="Title"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource PrimaryTextColor}"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+
+            <Label x:Name="NoBookingsMessage"
+                   Text="You haven't booked any room yet"
+                   FontSize="Large"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center" 
+                   TextColor="{DynamicResource QuaternaryColor}"/> 
+            
+            <CollectionView ItemsSource="{Binding Bookings}"
+                            VerticalOptions="FillAndExpand"
+                            x:Name="MyBookingsListView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnBookingSelected">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="1" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" 
+                               Margin="5" 
+                               CornerRadius="8" 
+                               BorderColor="{DynamicResource PrimaryColor}" 
+                               BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                               InputTransparent="True"
+                               HeightRequest="120">
+                            <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *" VerticalOptions="CenterAndExpand" RowSpacing="5">
+                                <Label Text="Booking #" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold"  
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="0" Grid.Column="0" />
+                                <Label Text="{Binding Id}" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="0" Grid.Column="1" />
+
+                                <Label Text="Check-in:" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="1" Grid.Column="0" />
+                                <Label Text="{Binding CheckIn}" 
+                                       FontSize="16" 
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="1" Grid.Column="1" />
+
+                                <Label Text="Check-out:" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="2" Grid.Column="0" />
+                                <Label Text="{Binding CheckOut}" 
+                                       FontSize="16" 
+                                       TextColor="{DynamicResource PrimaryTextColor}" 
+                                       Grid.Row="2" Grid.Column="1" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

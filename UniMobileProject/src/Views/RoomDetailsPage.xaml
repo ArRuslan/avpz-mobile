@@ -14,12 +14,8 @@
                    CornerRadius="10" 
                    Padding="15">
 
-                <VerticalStackLayout Spacing="10">
-        <Label x:Name="RoomTypeLabel" FontSize="24" FontAttributes="Bold" />
-        <Label x:Name="RoomPriceLabel" FontSize="20" />
-        <Label x:Name="RoomAvailableLabel" FontSize="18" />
-        <Button
-            Text="Book room" WidthRequest="200" HeightRequest="50" Clicked="OnBookClicked"></Button>
+                <VerticalStackLayout Spacing="30">
+                    
                     <Label Text="Room Details" 
                        FontSize="Title" 
                        TextColor="{DynamicResource PrimaryTextColor}" 
@@ -70,6 +66,16 @@
                            Grid.Column="1"
                            TextColor="{DynamicResource TertiaryTextColor}"/>
                     </Grid>
+
+                    <Button Text="Book!" 
+                            BackgroundColor="{DynamicResource PrimaryColor}" 
+                            TextColor="{DynamicResource SecondaryTextColor}"
+                            FontSize="Medium"
+                            FontAttributes="Bold"
+                            CornerRadius="20" 
+                            WidthRequest="200" 
+                            HeightRequest="50" 
+                            Clicked="OnBookClicked"/>
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>

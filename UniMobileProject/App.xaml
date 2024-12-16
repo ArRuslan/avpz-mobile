@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UniMobileProject"
+             xmlns:themes="clr-namespace:UniMobileProject.Resources.Themes"
              x:Class="UniMobileProject.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +10,9 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Themes/LightTheme.xaml" />
+                
+                <themes:LightTheme x:Key="LightTheme" />
+                <themes:DarkTheme x:Key="DarkTheme" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
