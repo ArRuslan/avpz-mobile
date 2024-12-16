@@ -19,12 +19,15 @@ namespace UniMobileProject.src.Services.PageServices.Room
         }
 
         public async Task<PaginatedResponse<RoomModel>?> GetRooms(int hotelId, int page = 1, int pageSize = 5, string? type = null, decimal? priceMin = null, decimal? priceMax = null)
+
         {
             string query = $"?hotel_id={hotelId}&page={page}&page_size={pageSize}";
 
             if (!string.IsNullOrEmpty(type)) query += $"&type={type}";
             if (priceMin.HasValue) query += $"&price_min={priceMin.Value}";
             if (priceMax.HasValue) query += $"&price_max={priceMax.Value}";
+            if (!string.IsNullOrEmpty(checkIn)) query += $"&check_in={checkIn}";
+            if (!string.IsNullOrEmpty(checkOut)) query += $"&check_out={checkOut}";
 
             try
             {
@@ -40,20 +43,18 @@ namespace UniMobileProject.src.Services.PageServices.Room
                 }
                 else
                 {
-                    Console.WriteLine($"Ошибка при получении данных: {response.StatusCode}");
                     return null;
                 }
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Ошибка при выполнении запроса: {ex.Message}");
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
                 return null;
             }
         }
+
     }
 }

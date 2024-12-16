@@ -58,6 +58,9 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\edit_data_icon.png" />
+	  <None Remove="Resources\Images\filter_icon_dark.png" />
+	  <None Remove="Resources\Images\filter_icon_light.png" />
+	  <None Remove="Resources\Images\hhb_logo.png" />
 	  <None Remove="Resources\Images\main_page_icon.png" />
 	  <None Remove="Resources\Images\user_bookings_page_icon.png" />
 	  <None Remove="Resources\Images\user_profile_page_icon.png" />
@@ -84,6 +87,9 @@
 	  <MauiXaml Update="Resources\Themes\LightTheme.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="src\Views\HotelDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="src\Views\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -106,6 +112,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="src\Views\RoomDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="src\Views\RoomFilterPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="src\Views\RoomsPage.xaml">

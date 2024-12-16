@@ -1,38 +1,91 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.RoomsPage"
-             Title="Rooms">
-    <VerticalStackLayout Padding="10">
-        <Label Text="Rooms Available" FontSize="24" HorizontalOptions="Center" />
+             Title="Rooms"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-        <SearchBar 
-            Placeholder="Search by room type"
-            TextChanged="OnSearchTextChanged"
-            x:Name="TypeSearchBar" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="30">
 
-        <SearchBar 
-            Placeholder="Min price"
-            TextChanged="OnSearchTextChanged"
-            x:Name="MinPriceSearchBar" />
+            <HorizontalStackLayout HorizontalOptions="Start" Spacing="10">
+                <Image Source="hhb_logo.png" HeightRequest="50" Aspect="AspectFit" />
+                <Label Text="Rooms Available" 
+                       FontSize="Title" 
+                       FontAttributes="Bold" 
+                       TextColor="{DynamicResource PrimaryTextColor}" 
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
 
-        <SearchBar 
-            Placeholder="Max price"
-            TextChanged="OnSearchTextChanged"
-            x:Name="MaxPriceSearchBar" />
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <ListView x:Name="RoomsListView" IsPullToRefreshEnabled="True" ItemTapped="OnRoomTapped">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <StackLayout Padding="5">
-                            <Label Text="{Binding Type}" FontSize="18" FontAttributes="Bold" />
-                            <Label Text="{Binding Price, StringFormat='Price: {0:C}'}" />
-                            <Label Text="{Binding Available}" />
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </VerticalStackLayout>
+                <Frame Grid.Column="0"
+                       BorderColor="{DynamicResource PrimaryColor}" 
+                       BackgroundColor="{DynamicResource SecondaryColor}" 
+                       CornerRadius="30" 
+                       Padding="5">
+                    <SearchBar Placeholder="Search by room type"
+                               SearchButtonPressed="OnSearchButtonPressed"
+                               x:Name="TypeSearchBar" 
+                               PlaceholderColor="{DynamicResource QuaternaryTextColor}"
+                               TextColor="{DynamicResource TertiaryTextColor}" />
+                </Frame>
+
+                <ImageButton Grid.Column="1"
+                             Source="{DynamicResource FilterIconSource}"
+                             HeightRequest="40"
+                             WidthRequest="40"
+                             BackgroundColor="Transparent"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Clicked="OnFilterButtonClicked" />
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Rooms}" 
+                            VerticalOptions="FillAndExpand"
+                            x:Name="RoomsListView"
+                            SelectionMode="Single"
+                            SelectionChanged="OnRoomSelected">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" 
+                               Margin="5" 
+                               CornerRadius="8" 
+                               BorderColor="{DynamicResource PrimaryColor}" 
+                               BackgroundColor="{DynamicResource SecondaryColor}"
+                               InputTransparent="True"
+                               HeightRequest="150">
+                            <VerticalStackLayout VerticalOptions="EndAndExpand" Spacing="3">
+                                <Label Text="{Binding Type}" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold"  
+                                       TextColor="{DynamicResource PrimaryTextColor}" />
+                                <Label Text="{Binding Price, StringFormat='Price: {0:C}'}" 
+                                       FontSize="18" 
+                                       TextColor="{DynamicResource PrimaryTextColor}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button x:Name="ResetSearchButton" 
+                    Text="Reset Search" 
+                    Clicked="OnSearchResetButtonPressed" 
+                    BackgroundColor="{DynamicResource SecondaryColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}"
+                    BorderColor="{DynamicResource PrimaryColor}"
+                    FontAttributes="Bold"
+                    BorderWidth="2"
+                    CornerRadius="20" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+    
 </ContentPage>

@@ -2,12 +2,76 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniMobileProject.src.Views.RoomDetailsPage"
-             Title="Room Details">
-    <VerticalStackLayout Padding="10">
+             Title="Room Details"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <ScrollView>
+
+        <VerticalStackLayout Padding="20" 
+                             Spacing="30">
+            <Frame BorderColor="{DynamicResource TertiaryColor}" 
+                   BackgroundColor="{DynamicResource TertiaryColor}" 
+                   CornerRadius="10" 
+                   Padding="15">
+
+                <VerticalStackLayout Spacing="10">
         <Label x:Name="RoomTypeLabel" FontSize="24" FontAttributes="Bold" />
         <Label x:Name="RoomPriceLabel" FontSize="20" />
         <Label x:Name="RoomAvailableLabel" FontSize="18" />
         <Button
             Text="Book room" WidthRequest="200" HeightRequest="50" Clicked="OnBookClicked"></Button>
-    </VerticalStackLayout>
+                    <Label Text="Room Details" 
+                       FontSize="Title" 
+                       TextColor="{DynamicResource PrimaryTextColor}" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Start" />
+
+                    <Grid ColumnDefinitions="Auto, *" 
+                      RowDefinitions="Auto, Auto, Auto" 
+                      ColumnSpacing="10" 
+                      RowSpacing="20">
+
+                        <Label Text="Type:" 
+                           Grid.Row="0" 
+                           Grid.Column="0" 
+                           FontSize="Medium" 
+                           VerticalOptions="Center"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="RoomTypeLabel" 
+                           FontSize="Medium" 
+                           Grid.Row="0" 
+                           Grid.Column="1"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label Text="Price:" 
+                           Grid.Row="1" 
+                           Grid.Column="0" 
+                           FontSize="Medium" 
+                           VerticalOptions="Center"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="RoomPriceLabel"  
+                           FontSize="Medium" 
+                           Grid.Row="1" 
+                           Grid.Column="1"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label Text="Availability:" 
+                           Grid.Row="2" 
+                           Grid.Column="0" 
+                           FontSize="Medium" 
+                           VerticalOptions="Center"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+
+                        <Label x:Name="RoomAvailableLabel" 
+                           FontSize="Medium" 
+                           Grid.Row="2" 
+                           Grid.Column="1"
+                           TextColor="{DynamicResource TertiaryTextColor}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView> 
 </ContentPage>

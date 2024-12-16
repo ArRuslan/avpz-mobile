@@ -11,7 +11,9 @@ namespace UniMobileProject.src.Views
     public partial class MainPage : ContentPage
     {
         private HotelService _hotelService;
+        private string _currentSearchProperty = "Name";
         public ObservableCollection<HotelModel> Hotels { get; set; }
+        private CancellationTokenSource _cancellationTokenSource;
         public ICommand NavigateToRoomsCommand { get; private set; }
 
         public MainPage()
@@ -26,29 +28,49 @@ namespace UniMobileProject.src.Views
             Hotels = new ObservableCollection<HotelModel>();
             BindingContext = this;
 
-            // Инициализация команды для навигации
+            // Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї ГЄГ®Г¬Г Г­Г¤Г» Г¤Г«Гї Г­Г ГўГЁГЈГ Г¶ГЁГЁ
             NavigateToRoomsCommand = new Command<HotelModel>(async (hotel) => await NavigateToRooms(hotel));
+
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            SearchPropertyPicker.SelectedIndex = 0;
+            SearchHotels.Placeholder = $"Search by {_currentSearchProperty}";
+
             await LoadHotels();
         }
 
         private async Task LoadHotels(string? name = null, string? address = null, string? description = null)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var token = _cancellationTokenSource.Token;
+
             try
             {
                 var response = await _hotelService.GetHotels(page: 1, pageSize: 50, name: name, address: address, description: description);
-                if (response != null)
+                if (response != null && this.IsVisible)
                 {
-                    Hotels.Clear();
-                    foreach (var hotel in response.Result)
+                    await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        Hotels.Add(hotel);
-                    }
+                        if (token.IsCancellationRequested) return;
+
+                        BindingContext = null;
+                        Hotels.Clear();
+                        foreach (var hotel in response.Result)
+                        {
+                            Hotels.Add(hotel);
+                        }
+                        BindingContext = this;
+                    });
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("LoadHotels operation canceled.");
             }
             catch (Exception ex)
             {
@@ -56,29 +78,51 @@ namespace UniMobileProject.src.Views
             }
         }
 
-        private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        private void OnSearchPropertyChanged(object sender, EventArgs e)
         {
-            string name = NameSearchBar.Text ?? string.Empty;
-            string address = AddressSearchBar.Text ?? string.Empty;
-            string description = DescriptionSearchBar.Text ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(address) && string.IsNullOrWhiteSpace(description))
+            if (SearchPropertyPicker.SelectedIndex != -1)
             {
-                await LoadHotels();
-                return;
+                _currentSearchProperty = SearchPropertyPicker.SelectedItem.ToString();
+                SearchHotels.Placeholder = $"Search by {_currentSearchProperty}";
             }
-
-            await LoadHotels(name, address, description);
         }
 
-        private async void OnHotelTapped(object sender, ItemTappedEventArgs e)
+        private async void OnSearchButtonPressed(object sender, EventArgs e)
         {
-            if (e.Item is HotelModel selectedHotel)
-            {
-                await NavigateToRooms(selectedHotel);
+            string searchText = SearchHotels.Text ?? string.Empty;
 
-                // Сбрасываем выбранный элемент
-                ((ListView)sender).SelectedItem = null;
+            // Perform search based on selected property
+            switch (_currentSearchProperty)
+            {
+                case "Name":
+                    await LoadHotels(name: searchText);
+                    break;
+                case "Address":
+                    await LoadHotels(address: searchText);
+                    break;
+                case "Description":
+                    await LoadHotels(description: searchText);
+                    break;
+                default:
+                    await LoadHotels();
+                    break;
+            }
+        }
+
+        private async void OnSearchResetButtonPressed(object sender, EventArgs e)
+        {
+            SearchHotels.Text = "";
+
+            await LoadHotels();
+        }
+
+        private async void OnHotelSelected(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.FirstOrDefault() is HotelModel selectedHotel)
+            {
+                await Navigation.PushAsync(new HotelDetailsPage(selectedHotel));
+
+                ((CollectionView)sender).SelectedItem = null;
             }
         }
 
