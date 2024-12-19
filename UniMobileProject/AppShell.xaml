@@ -31,5 +31,9 @@
         Title="Rooms" 
         ContentTemplate="{DataTemplate local:RoomsPage}" 
         Route="rooms" />
+    <ShellContent
+        Title="Admin Scanner"
+        Route="AdminScannerPage"
+        ContentTemplate="{DataTemplate local:AdminScannerPage}"/>
 
 </Shell>
