@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             x:Class="UniMobileProject.src.Views.AdminScannerPage"
+             Title="AdminScannerPage">
+    <Frame VerticalOptions="Center"
+       HorizontalOptions="Center"
+       WidthRequest="320"
+       BackgroundColor="{DynamicResource PageBackgroundColor}"
+       CornerRadius="20"
+       Padding="0"
+       HasShadow="True"
+       Margin="30">
+        
+        <VerticalStackLayout Padding="20" Spacing="20" BackgroundColor="{DynamicResource SecondaryColor}">
+            <Label Text="QR Scanning"
+           FontSize="Title"
+           FontAttributes="Bold"
+           TextColor="{DynamicResource PrimaryTextColor}" />
+
+            <Label x:Name="barcodeResult" FontSize="20" TextColor="{DynamicResource PrimaryTextColor}" Text=""/>
+            <cv:CameraView x:Name="cameraView" 
+                               WidthRequest="300" 
+                               HeightRequest="300" 
+                               CamerasLoaded="cameraView_CamerasLoaded" 
+                               BarCodeDetectionEnabled="True"
+                               BarcodeDetected="cameraView_BarcodeDetected"/>
+
+        </VerticalStackLayout>
+    </Frame>
+</ContentPage>

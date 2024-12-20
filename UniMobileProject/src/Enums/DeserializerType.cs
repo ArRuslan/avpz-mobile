@@ -7,5 +7,6 @@ public enum DeserializerType
     Hotel,
     Room,
     Booking,
-    MyBookings
+    MyBookings,
+    Admin
 }

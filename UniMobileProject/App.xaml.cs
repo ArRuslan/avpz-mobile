@@ -48,5 +48,29 @@ namespace UniMobileProject
             // Оновлення теми при зміні системної
             ApplySystemTheme();
         }
+
+        private async Task CheckAndRequestPermissionsAsync()
+        {
+            var cameraStatus = await Permissions.RequestAsync<Permissions.Camera>();
+            if (cameraStatus == PermissionStatus.Granted)
+            {
+                Console.WriteLine("Camera permission granted.");
+            }
+            else
+            {
+                Console.WriteLine("Camera permission denied.");
+            }
+            
+            var storageWriteStatus = await Permissions.RequestAsync<Permissions.StorageWrite>();
+            var storageReadStatus = await Permissions.RequestAsync<Permissions.StorageRead>();
+            if (storageWriteStatus == PermissionStatus.Granted && storageReadStatus == PermissionStatus.Granted)
+            {
+                Console.WriteLine("Storage permissions granted.");
+            }
+            else
+            {
+                Console.WriteLine("Storage permissions denied.");
+            }
+        }
     }
 }

@@ -1,6 +1,11 @@
 using Microsoft.Maui.ApplicationModel.Communication;
+using UniMobileProject.src.Enums;
 using UniMobileProject.src.Models.ServiceModels.AuthModels;
+using UniMobileProject.src.Models.ServiceModels.ProfileModels;
 using UniMobileProject.src.Services.Auth;
+using UniMobileProject.src.Services.Deserialization;
+using UniMobileProject.src.Services.Http;
+using UniMobileProject.src.Services.PageServices.Profile;
 using UniMobileProject.src.Services.ReCaptcha;
 using UniMobileProject.src.Services.Validation;
 
@@ -11,6 +16,7 @@ namespace UniMobileProject.src.Views
         private readonly BasicAuthService _authService;
         private readonly ValidationService _validationService;
         private readonly TokenMaintainer _tokenMaintainer = new TokenMaintainer();
+        private readonly ProfileService _profileService;
 
         private string _captchaToken = "";
         private bool isForgotPasswordMode = false;
@@ -19,6 +25,7 @@ namespace UniMobileProject.src.Views
             InitializeComponent();
             _authService = authService;
             _validationService = validationService;
+            _profileService = new ProfileService(new HttpServiceFactory(), new DeserializationFactory());
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -62,17 +69,44 @@ namespace UniMobileProject.src.Views
                     return; 
                 }
 
-
-                bool success = await _tokenMaintainer.SetToken(successfulAuthResponse);
-                if (!success)
+                // Збереження токену
+                bool tokenSetSuccess = await _tokenMaintainer.SetToken(successfulAuthResponse);
+                if (!tokenSetSuccess)
                 {
                     await DisplayAlert("Error", "Something went wrong during authorization, please try again later", "Ok");
+                    return;
+                }
+
+                // Завантаження профілю користувача
+                var profileResponse = await _profileService.GetProfileModel();
+                if (profileResponse is ProfileModel profileResult && profileResult.IsSuccess)
+                {
+                    var userRole = profileResult.Role;
+
+                    // Перевірка ролі
+                    if (userRole == Role.Admin)
+                    {
+                        bool isAdminConfirmed = await DisplayAlert(
+                            "Admin Access",
+                            "Do you want to join the admin panel?",
+                            "Yes",
+                            "No"
+                        );
+
+                        if (isAdminConfirmed)
+                        {
+                            Application.Current.MainPage = new NavigationPage(new AdminPage());
+                            return;
+                        }
+                    }
                 }
                 else
                 {
-                    Application.Current.MainPage = new NavigationPage(new MainTabbedPage());
-
+                    await DisplayAlert("Error", "Failed to load user profile.", "OK");
                 }
+
+                // Перехід на основну сторінку
+                Application.Current.MainPage = new NavigationPage(new MainTabbedPage());
             }
             else if (response is FailedAuth failedResponse)
             {
