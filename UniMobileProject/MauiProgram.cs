@@ -6,6 +6,7 @@ using ZXing.Net.Maui;
 using UniMobileProject.src.Services.Http;
 using UniMobileProject.src.Services.Deserialization;
 using ZXing.Net.Maui.Controls;
+using Camera.MAUI;
 
 namespace UniMobileProject
 {
@@ -24,6 +25,7 @@ namespace UniMobileProject
 
             builder
                 .UseMauiApp<App>()
+                .UseMauiCameraView()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

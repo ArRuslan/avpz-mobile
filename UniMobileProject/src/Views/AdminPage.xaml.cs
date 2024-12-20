@@ -1,3 +1,4 @@
+using Camera.MAUI;
 using IronQr;
 using IronSoftware.Drawing;
 using ZXing.Net.Maui;
@@ -7,6 +8,8 @@ namespace UniMobileProject.src.Views;
 
 public partial class AdminPage : ContentPage
 {
+    private string? bookingToken;
+
 	public AdminPage()
 	{
 		InitializeComponent();
@@ -14,18 +17,30 @@ public partial class AdminPage : ContentPage
 
     private async void ScanQrClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(AdminScannerPage));
-	}
+        var qrPopup = new AdminScannerPage();
+
+        qrPopup.qrVerified += OnQrVerified;
+
+        await Navigation.PushModalAsync(qrPopup);
+    }
+
+    private void OnQrVerified(object? sender, AdminScannerPage.QRData e)
+    {
+        bookingToken = e.Token;
+
+        //token processing
+    }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
 
-        if (Shell.Current.CurrentState.Parameters.TryGetValue("ScannedToken", out var scannedToken))
-        {
-            if (scannedToken != null) ;
-        }
+        //if (Shell.Current.CurrentState.Parameters.TryGetValue("ScannedToken", out var scannedToken))
+        //{
+        //    if (scannedToken != null) ;
+        //}
     }
+
 
     //private async Task<string> CaptureAndScanQrCode()
     //{
@@ -48,7 +63,7 @@ public partial class AdminPage : ContentPage
     //        try
     //        {
     //            var inputBmp = AnyBitmap.FromBytes(imageData);
-    //            Qr ImageInput imageInput = new QrImageInput(inputBmp);
+    //            QrImageInput imageInput = new QrImageInput(inputBmp);
     //            var barcodeResult = reader.Read(imageInput);
 
     //            if (barcodeResult?.Count() > 0)

@@ -15,6 +15,5 @@
     <local:MainPage Title="Main" IconImageSource="main_page_icon.png" />
     <local:UserBookingsPage Title="Bookings" IconImageSource="user_bookings_page_icon.png" />
     <local:UserProfilePage Title="My Profile" IconImageSource="user_profile_page_icon.png" />
-    <local:AdminPage Title="Admin"/>
 
 </TabbedPage>
