@@ -19,6 +19,7 @@ namespace UniMobileProject.src.Services.Deserialization
                 DeserializerType.Room => new RoomDeserializer(),
                 DeserializerType.Booking => new BookingDeserializer(),
                 DeserializerType.MyBookings => new MyBookingsDeserializer(),
+                DeserializerType.Admin => new AdminDeserializer(),
                 _ => throw new ArgumentException($"Can't create a serializer with an unspecified type: {type}")
             };
         }

@@ -31,7 +31,7 @@ public partial class AdminScannerPage : ContentPage
     {
         if (cameraView.Cameras.Count > 0)
         {
-            cameraView.Camera = cameraView.Cameras[0];
+            cameraView.Camera = cameraView.Cameras.FirstOrDefault();
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await cameraView.StopCameraAsync();
